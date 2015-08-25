@@ -17,12 +17,15 @@
 	<div class="header-wrapper">
 		<div class="header" style="{% block header_style %}{% endblock %}">
 			<a href="/" class="logo">Thiuff</a>
-			{% if user.is_authenticated %}
-				<a href="/auth/logout/" class="icon"><i class="fa fa-cog"></i></a>
-				<a href="#" class="icon"><i class="fa fa-circle-o"></i></a>
-			{% else %}
-				<a href="/auth/login/" class="icon"><i class="fa fa-sign-in"></i></a>
-			{% endif %}
+			<ul class="nav">
+				{% if user.is_authenticated %}
+					<li><a href="#">0 replies</li>
+					<li class="main"><a href="/auth/logout/">{{ user.username }}</a></li>
+				{% else %}
+					<li><a href="/auth/login/">Log in</a></li>
+					<li class="main"><a href="/auth/login/">Sign up</a></li>
+				{% endif %}
+			</ul>
 		</div>
 	</div>
 
