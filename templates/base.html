@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<html>
+<head>
+    <title>{% block whole_title %}{% block title %}{% endblock %} - Thiuff{% endblock %}</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="{% static "css/reset.css" %}" type="text/css" media="screen" />
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="{% static "css/style.css" %}" type="text/css" media="screen" />
+	<script src="{% static "js/jquery-1.11.3.min.js" %}" type="text/javascript"></script>
+	{% block extra_head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+	<div class="header-wrapper">
+		<div class="header" style="{% block header_style %}{% endblock %}">
+			<a href="/" class="logo">Thiuff</a>
+			{% if user.is_authenticated %}
+				<a href="/auth/logout/" class="icon"><i class="fa fa-cog"></i></a>
+				<a href="#" class="icon"><i class="fa fa-circle-o"></i></a>
+			{% else %}
+				<a href="/auth/login/" class="icon"><i class="fa fa-sign-in"></i></a>
+			{% endif %}
+		</div>
+	</div>
+
+	<div class="content">
+		{% block content %}
+		{% endblock %}
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,290 @@
+/* Body styles */
+/*
+    Body layout is a 4-column grid. Columns are 250, spacing 50.
+    Two cols is 550. Three cols is 850. Four is 1150.
+*/
+
+body {
+    font-size: 16px;
+    min-height: 100%;
+    font-family: Helvetica, Arial, sans-serif;
+    height: 100%;
+}
+
+
+/* Header */
+
+.header-wrapper {
+    overflow: hidden;
+    background: url("../images/header/reef.png");
+    background-size: cover;
+}
+
+.header {
+    width: 1150px;
+    height: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+    position: relative;
+}
+    .header .logo {
+        position: absolute;
+        bottom: -8px;
+        left: 20px;
+        color: white;
+        font-size: 40px;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+    }
+    .header .icon {
+        float: right;
+        margin: 10px 0 0 20px;
+        color: white;
+        font-size: 30px;
+    }
+
+/* Content wrapper */
+
+.content {
+    overflow: hidden;
+    width: 1150px;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* General page layout */
+
+h1 {
+    font-size: 35px;
+    font-weight: normal;
+    margin: 30px 0 15px 0;
+}
+    h1:nth-child(1) {
+        margin-top: 0;
+    }
+
+p {
+    line-height: 160%;
+    margin-bottom: 1.5em;
+}
+
+.small-centre {
+    width: 550px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Buttons */
+
+.button {
+    position: relative;
+    padding: 6px 0.8em;
+    color: #fff;
+    background-color: #0084c8;
+    border: none;
+    border-radius: 3px;
+    border-bottom: 1px solid #036;
+    text-decoration: none;
+    font-style: normal;
+    font-size: 100%;
+}
+    a.button {
+        padding-bottom: 7px;
+    }
+    .button:hover {
+        text-decoration: none;
+        opacity: 0.9;
+    }
+    .button:active {
+        top: 1px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0);
+    }
+    .button.prominent {
+        background-color: #09a3f2;
+    }
+    .button.boring {
+        background-color: #818E90;
+    }
+    .button.create {
+        background-color: #2C954C;
+    }
+    .button.serious {
+        background-color: #651212;
+    }
+    .button.inline {
+        margin: 0 0.6em;
+    }
+
+.buttons {
+    display: block;
+    padding: 10px 0;
+}
+
+/* Form styles */
+
+.field {
+    margin: 0 0 1em 0;
+}
+    .field label span {
+        display: block;
+        font-size: 16px;
+        color: #444;
+        text-transform: uppercase;
+        margin: 0 0 -3px 0;
+    }
+    .field input {
+        display: block;
+        font-size: 18px;
+        border: 1px solid #999;
+        color: #555;
+        padding: 8px;
+        margin: 7px 0 5px 0;
+        width: 99%;
+    }
+    .field.errors input {
+        border-color: #a00;
+    }
+    .field textarea {
+        display: block;
+        font-size: 18px;
+        border: 1px solid #666;
+        padding: 5px;
+        margin: 7px 0 5px 0;
+    }
+    .field select {
+        display: block;
+        font-size: 18px;
+        margin: 7px 0 5px 0;
+        border: 1px solid #666;
+        padding: 5px;
+    }
+    .field input {
+        width: 90%;
+    }
+    .field .help-text {
+        font-size: 14px;
+        color: #555;
+        margin: 0 0 5px 0;
+    }
+    .field .required {
+        display: inline;
+        color: #900;
+    }
+
+.errorlist {
+    color: #600;
+    font-size: 14px;
+    margin: 8px 0 13px 0;
+}
+    .errorlist li {
+        margin: 0 0 5px 0;
+    }
+
+form .buttons .button {
+    font-size: 18px;
+}
+
+form.inline {
+    display: inline;
+}
+    form.inline .buttons .button {
+        font-size: 100%;
+    }
+
+/* Nice tables */
+
+table.nice {
+    width: 100%;
+}
+    table.nice th {
+        text-transform: uppercase;
+        color: #888;
+        font-weight: bold;
+        text-align: left;
+        padding: 0 20px 15px 0px;
+        vertical-align: middle;
+    }
+    table.nice td {
+        padding: 8px 20px 8px 0px;
+        vertical-align: middle;
+    }
+    table.nice td.small {
+        font-size: 90%;
+    }
+    table.nice a {
+        text-decoration: none;
+        font-weight: bold;
+        color: inherit;
+    }
+    table.nice a.button {
+        text-decoration: none;
+        font-weight: normal;
+        color: #eee;
+        margin: 0 0.4em 0 0;
+        padding: 5px 0.6em;
+    }
+
+
+/*****************
+ *****************
+       750px
+ *****************
+ *****************/
+
+@media (max-width: 1150px) {
+
+    .section {
+        width: 750px;
+    }
+
+    .primary-nav {
+        width: 750px;
+    }
+
+    .main-column {
+        width: 750px;
+    }
+
+    .secondary-column {
+        clear: left;
+    }
+
+    h1 {
+        clear: both;
+    }
+
+}
+
+
+/*****************
+ *****************
+       250px
+ *****************
+ *****************/
+
+@media (max-width: 767px) {
+
+    .main-column {
+        width: 100%;
+    }
+
+    .primary-nav,
+    .section {
+        width: 90%;
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+
+    h1 {
+        font-size: 180%;
+        margin: 10px 0 20px 0;
+    }
+
+    h2 {
+        font-size: 150%;
+    }
+
+}
