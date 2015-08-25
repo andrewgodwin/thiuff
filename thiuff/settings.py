@@ -125,3 +125,27 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+
+
+# Disallowed group names
+
+DISALLOWED_NAMES = [
+    "help",
+    "static",
+    "site",
+    "alpha",
+    "beta",
+    "test",
+    "testing",
+    "thiuff",
+    "assistance",
+    "about",
+    "login",
+    "log-in",
+    "signin",
+    "signup",
+    "logout",
+    "auth",
+    "admins",
+    "admin",
+]

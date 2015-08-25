@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+import urlman
+
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django_pgjson.fields import JsonBField
@@ -11,8 +13,18 @@ class Group(models.Model):
     "Django" or "Kittens".
     """
 
-    title = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     created = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=True)
+
+    class urls(urlman.Urls):
+        view = "/g/{self.name}/"
+
+    def get_absolute_url(self):
+        return self.urls.view
+
+    def __unicode__(self):
+        return self.name
 
 
 class GroupMember(models.Model):

@@ -16,16 +16,31 @@
 
 	<div class="header-wrapper">
 		<div class="header" style="{% block header_style %}{% endblock %}">
-			<a href="/" class="logo">Thiuff</a>
-			<ul class="nav">
-				{% if user.is_authenticated %}
+			{% if group %}
+				<a href="/" class="logo-small">Thiuff</a>
+				<a href="{{ group.urls.view }}" class="logo">{{ group }}</a>
+			{% else %}
+				<a href="/" class="logo">Thiuff</a>
+			{% endif %}
+			{% if user.is_authenticated %}
+				<ul class="nav">
 					<li><a href="#">0 replies</li>
 					<li class="main"><a href="/auth/logout/">{{ user.username }}</a></li>
-				{% else %}
+				</ul>
+				<ul class="subnav">
+					<li><a href="#">settings</a></li>
+					<li><a href="/g/create/">create group</a></li>
+					<li><a href="#">new thread</a></li>
+				</ul>
+			{% else %}
+				<ul class="nav">
 					<li><a href="/auth/login/">Log in</a></li>
 					<li class="main"><a href="/auth/login/">Sign up</a></li>
-				{% endif %}
-			</ul>
+				</ul>
+				<ul class="subnav">
+					<li><a href="#">about</a></li>
+				</ul>
+			{% endif %}
 		</div>
 	</div>
 

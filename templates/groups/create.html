@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Create Group{% endblock %}
+
+{% block content %}
+
+	<div class="two-left">
+        <h1>Create group</h1>
+        <p>Make a new group!</p>
+		{% include "_form.html" with submit_verb="Create" %}
+	</div>
+
+{% endblock %}
