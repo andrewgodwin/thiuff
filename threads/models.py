@@ -19,6 +19,7 @@ class Group(models.Model):
 
     class urls(urlman.Urls):
         view = "/g/{self.name}/"
+        create_thread = "{view}t/create/"
 
     def get_absolute_url(self):
         return self.urls.view

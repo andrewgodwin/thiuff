@@ -124,6 +124,14 @@ p {
 
 /* Thread indexes */
 
+.groups {
+    margin: 15px 0;
+}
+    a.group {
+        color: #777;
+        text-decoration: none;
+    }
+
 .thread {
     margin: 0 0 15px -110px;
     overflow: hidden;

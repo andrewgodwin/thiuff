@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from ..models import Group
 
 
 def index(request):
@@ -6,4 +7,8 @@ def index(request):
     Main index page
     """
 
-    return render(request, "index.html", {})
+    groups = Group.objects.order_by("name")[:12]
+
+    return render(request, "index.html", {
+        "groups": groups,
+    })
