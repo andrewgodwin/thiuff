@@ -34,6 +34,23 @@
 
     <hr>
 
-    Discussion!
+    <div class="discussions">
+        {% for message in thread.top_level_messages %}
+            {{ message.body }}
+        {% else %}
+            <p class="empty">No discussions yet.</p>
+        {% endfor %}
+    </div>
+
+    <hr>
+
+    <form class="new-discussion" action="." method="POST">
+        {% csrf_token %}
+        <div class="field">
+            <textarea name="body"></textarea>
+            <p class="help-text"><a href="#">Formatting help</a></p>
+        </div>
+        <input type="submit" value="Post" class="button">
+    </form>
 
 {% endblock %}

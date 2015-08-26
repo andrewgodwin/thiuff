@@ -129,6 +129,13 @@ class Thread(models.Model):
             raise ValueError("XSS attempt detected")
         return output
 
+    @property
+    def top_level_messages(self):
+        """
+        Returns all top-level (non-parented) messages
+        """
+        return self.messages.filter(parent__isnull=True)
+
 
 class ThreadInteraction(models.Model):
     """

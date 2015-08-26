@@ -153,11 +153,16 @@ p {
     line-height: 160%;
     margin-bottom: 1em;
 }
+    p.empty {
+        font-style: italic;
+        color: #777;
+    }
 
 hr {
     border: 0;
     height: 1px;
     background: #ccc;
+    margin: 15px 0;
 }
 
 .two-left {
@@ -251,6 +256,18 @@ hr {
 .thread-body {
     margin: 20px 0;
 }
+
+.new-discussion {
+}
+    .new-discussion .field textarea {
+        width: 550px;
+        height: 100px;
+        font-family: inherit;
+        font-size: 16px;
+    }
+    .new-discussion .field .help-text {
+        color: #aaa;
+    }
 
 /* Buttons */
 
