@@ -2,19 +2,17 @@
 
 {% block title %}{{ group }}{% endblock %}
 
-{% block logo_text %}{{ group }} <small>Thiuff</small>{% endblock %}
-
 {% block content %}
 
-    <a href="{{ group.urls.create_thread }}">Create thread</a>
+    <a href="{{ group.urls.create_topic }}">Create thread</a>
 
     <div class="threads">
-        {% for thread in threads %}
-            <div class="thread">
+        {% for topic in topics %}
+            <a class="thread" href="{{ topic.urls.view }}">
                 <span class="icon" style="background: #193E30"><i class="fa fa-newspaper-o"></i></span>
-                <h3>Django <span class="stats">4 replies / 14 comments</span></h3>
-                <h4>How to do asynchronous channel stuff?</h4>
-            </div>
+                <h3>{{ topic.group }} <span class="stats">4 replies / 14 comments</span></h3>
+                <h4>{{ topic.title }}</h4>
+            </a>
         {% endfor %}
     </div>
 

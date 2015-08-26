@@ -17,7 +17,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
-from threads.views import front, groups
+from threads.views import front, groups, topics
 from users.views import auth
 
 urlpatterns = [
@@ -26,5 +26,7 @@ urlpatterns = [
     url(r'^auth/logout/$', auth.logout),
     url(r'^g/create/$', groups.CreateGroup.as_view()),
     url(r'^g/([^/]+)/$', groups.view),
+    url(r'^g/([^/]+)/t/create/$', topics.create),
+    url(r'^g/[^/]+/t/([^/]+)/$', topics.view),
     url(r'^admin/', admin.site.urls),
 ]

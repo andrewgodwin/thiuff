@@ -19,7 +19,7 @@ class Group(models.Model):
 
     class urls(urlman.Urls):
         view = "/g/{self.name}/"
-        create_thread = "{view}t/create/"
+        create_topic = "{view}t/create/"
 
     def get_absolute_url(self):
         return self.urls.view
@@ -88,6 +88,15 @@ class Topic(models.Model):
     title = models.TextField()
     url = models.URLField(blank=True, null=True)
     body = models.TextField(blank=True, null=True)
+
+    class urls(urlman.Urls):
+        view = "{self.group.urls.view}t/{self.id}/"
+
+    def get_absolute_url(self):
+        return self.urls.view
+
+    def __unicode__(self):
+        return self.title
 
 
 class TopicInteraction(models.Model):

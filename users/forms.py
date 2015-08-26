@@ -8,7 +8,7 @@ class LoginForm(forms.Form):
     Login form
     """
 
-    username = forms.CharField()
+    username = forms.CharField(label="Username/Email")
     password = forms.CharField(widget=forms.PasswordInput)
 
     def clean_username(self):

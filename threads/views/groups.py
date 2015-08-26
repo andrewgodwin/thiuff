@@ -17,10 +17,13 @@ class CreateGroup(FormView):
 
 def view(request, group_name):
     group = Group.objects.get(name__iexact=group_name)
+    topics = group.topics.order_by("-score", "-created")
+
     return render(
         request,
         "groups/view.html",
         {
             "group": group,
+            "topics": topics,
         },
     )

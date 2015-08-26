@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Create Topic{% endblock %}
+
+{% block content %}
+
+	<div class="two-left">
+        <h1>Create topic</h1>
+        <p>Make a new topic!</p>
+        {% with submit_verb="Create" %}
+		    {% include "_form.html" %}
+        {% endwith %}
+	</div>
+
+{% endblock %}
