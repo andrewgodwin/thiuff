@@ -4,15 +4,24 @@
 
 {% block content %}
 
-    <a href="{{ group.urls.create_topic }}">Create thread</a>
+    <ul class="subnav">
+        <li><a href="{{ group.urls.create_thread }}">
+            <i class="fa fa-plus"></i>
+            Create thread
+        </a></li>
+        <li><a href="#">
+            <i class="fa fa-cog"></i>
+            Settings
+        </a></li>
+        <li><a href="#">
+            <i class="fa fa-legal"></i>
+            Moderation
+        </a></li>
+    </ul>
 
     <div class="threads">
-        {% for topic in topics %}
-            <a class="thread" href="{{ topic.urls.view }}">
-                <span class="icon" style="background: #193E30"><i class="fa fa-newspaper-o"></i></span>
-                <h3>{{ topic.group }} <span class="stats">4 replies / 14 comments</span></h3>
-                <h4>{{ topic.title }}</h4>
-            </a>
+        {% for thread in threads %}
+            {% include "_threadbox.html" %}
         {% endfor %}
     </div>
 

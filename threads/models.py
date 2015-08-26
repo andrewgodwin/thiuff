@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import urlman
+import markdown
 
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
@@ -9,23 +10,31 @@ from django_pgjson.fields import JsonBField
 
 class Group(models.Model):
     """
-    A grouping of topics, generally under some overarching subject like
+    A grouping of threads, generally under some overarching subject like
     "Django" or "Kittens".
     """
 
     name = models.CharField(max_length=255, unique=True)
     created = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
+    colour = models.CharField(max_length=30, blank=True, null=True)
 
     class urls(urlman.Urls):
         view = "/g/{self.name}/"
-        create_topic = "{view}t/create/"
+        create_thread = "{view}t/create/"
 
     def get_absolute_url(self):
         return self.urls.view
 
     def __unicode__(self):
         return self.name
+
+    @property
+    def icon_colour(self):
+        for char in self.colour.lower():
+            if char not in "#1234567890abcdef":
+                raise ValueError("Colour incorrect")
+        return self.colour or "#369"
 
 
 class GroupMember(models.Model):
@@ -53,14 +62,14 @@ class GroupMember(models.Model):
         return False
 
 
-class Topic(models.Model):
+class Thread(models.Model):
     """
-    A topic is an overarching point of discussion. It could be a link, an image,
+    A thread is an overarching point of discussion. It could be a link, an image,
     or just a question or statement. They're highly moderated and selective; while
-    users can suggest topics to a group, only a select group of users can
+    users can suggest threads to a group, only a select group of users can
     actually approve them to appear in the main flow.
 
-    Topics present as a sort of meld of chatroom and forum; there's single-level
+    Threads present as a sort of meld of chatroom and forum; there's single-level
     threading and longer form replies are encouraged, but at the same time
     replies appear instantly and can be composed inline.
 
@@ -73,8 +82,8 @@ class Topic(models.Model):
         ("rejected", "Rejected"),
     ]
 
-    group = models.ForeignKey(Group, related_name="topics")
-    author = models.ForeignKey("users.User", related_name="topics")
+    group = models.ForeignKey(Group, related_name="threads")
+    author = models.ForeignKey("users.User", related_name="threads")
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -83,7 +92,7 @@ class Topic(models.Model):
 
     score = models.FloatField(default=0, db_index=True)
 
-    # A topic has at least a title, and might also have a link, text or
+    # A thread has at least a title, and might also have a link, text or
     # some other thing.
     title = models.TextField()
     url = models.URLField(blank=True, null=True)
@@ -91,6 +100,7 @@ class Topic(models.Model):
 
     class urls(urlman.Urls):
         view = "{self.group.urls.view}t/{self.id}/"
+        content = "{self.content_url}"
 
     def get_absolute_url(self):
         return self.urls.view
@@ -98,19 +108,40 @@ class Topic(models.Model):
     def __unicode__(self):
         return self.title
 
+    @property
+    def content_url(self):
+        """
+        Returns the primary "content" url - an external URL if one provided,
+        or the thread page if it's just text or other embedded content.
+        """
+        if self.url:
+            return self.url
+        return self.urls.view
 
-class TopicInteraction(models.Model):
+    @property
+    def formatted_body(self):
+        """
+        Formats the body to HTML.
+        """
+        output = markdown.markdown(self.body, safe_mode=True, enable_attributes=False)
+        # I'm really paranoid.
+        if "<script" in output:
+            raise ValueError("XSS attempt detected")
+        return output
+
+
+class ThreadInteraction(models.Model):
     """
-    When a topic is visited (the link clicked or the discussion page opened),
+    When a thread is visited (the link clicked or the discussion page opened),
     entries are written into this model. A periodic task goes round and uses
-    this to update the topic's current "score", along with inputs like
+    this to update the thread's current "score", along with inputs like
     "how much discussion is happening" and "how old is it?".
 
     This model isn't for permanent archival storage; old entries can be dropped
     after a while.
     """
 
-    topic = models.ForeignKey(Topic, related_name="interactions")
+    thread = models.ForeignKey(Thread, related_name="interactions")
     user = models.ForeignKey("users.User", related_name="interactions")
     view_content = models.BooleanField(default=False)
     view_discussion = models.BooleanField(default=False)
@@ -119,12 +150,12 @@ class TopicInteraction(models.Model):
 
 class Message(models.Model):
     """
-    A message on a Topic. Can be either top-level or one level down;
+    A message on a Thread. Can be either top-level or one level down;
     we disallow more nesting in the code, but the schema would technically
     allow full nesting.
     """
 
-    topic = models.ForeignKey(Topic, related_name="messages", db_index=True)
+    thread = models.ForeignKey(Thread, related_name="messages", db_index=True)
     parent = models.ForeignKey("self", related_name="children", null=True, blank=True)
 
     author = models.ForeignKey("users.User", related_name="messages")

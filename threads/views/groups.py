@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import render, redirect
 from django.views.generic import FormView
 
@@ -15,15 +16,30 @@ class CreateGroup(FormView):
         return redirect(group.urls.view)
 
 
+def index(request):
+    groups = Group.objects.filter()
+
+    return render(
+        request,
+        "groups/index.html",
+        {
+            "groups": groups,
+        },
+    )
+
+
 def view(request, group_name):
-    group = Group.objects.get(name__iexact=group_name)
-    topics = group.topics.order_by("-score", "-created")
+    try:
+        group = Group.objects.get(name__iexact=group_name)
+    except Group.DoesNotExist:
+        raise Http404("No such group")
+    threads = group.threads.order_by("-score", "-created")
 
     return render(
         request,
         "groups/view.html",
         {
             "group": group,
-            "topics": topics,
+            "threads": threads,
         },
     )

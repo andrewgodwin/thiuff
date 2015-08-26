@@ -1,0 +1,10 @@
+<div class="thread">
+    <a class="icon" style="background: {{ thread.group.icon_colour }}" href="{{ thread.urls.view }}">
+        <i class="fa fa-newspaper-o"></i>
+    </a>
+    <h3>
+        {{ thread.group }}
+        <a class="stats" href="{{ thread.urls.view }}">4 replies / 14 comments</a>
+    </h3>
+    <h4><a href="{{ thread.urls.content }}">{{ thread.title }}</a></h4>
+</div>

@@ -107,12 +107,30 @@ body {
     min-height: 300px;
     padding: 20px 20px;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+    position: relative;
 }
     body.lightbox .content {
         width: 550px;
         margin-top: 40px;
         padding: 20px 20px;
         text-align: center;
+    }
+    .content .subnav {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 1;
+    }
+    .content .subnav li {
+        float: right;
+        margin-left: 20px;
+    }
+    .content .subnav a {
+        color: #aaa;
+        text-decoration: none;
+    }
+    .content .subnav a:hover {
+        color: #888;
     }
 
 /* General page layout */
@@ -133,7 +151,13 @@ h1 {
 
 p {
     line-height: 160%;
-    margin-bottom: 1.5em;
+    margin-bottom: 1em;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: #ccc;
 }
 
 .two-left {
@@ -187,14 +211,46 @@ p {
         color: #333;
         font-size: 22px;
     }
-    .thread:hover h4 {
-        text-decoration: underline;
-    }
     .thread .stats {
         padding: 0 0 0 15px;
         color: #333;
     }
 
+/* Thread view */
+
+.content .solo-icon {
+    float: left;
+    margin: 0 0 0 -70px;
+    padding: 0 13px 0 0;
+    width: 74px;
+    height: 100%;
+    background: #369;
+    color: #fff;
+    font-size: 30px;
+    text-align: right;
+    line-height: 45px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.thread-view h2 {
+    margin: 0 0 0 40px;
+    line-height: 45px;
+    color: #333;
+    font-size: 30px;
+}
+
+.thread-meta {
+    margin: 0 0 0 40px;
+    color: #888;
+    font-size: 14px;
+}
+    .thread-meta a {
+        color: inherit;
+    }
+
+.thread-body {
+    margin: 20px 0;
+}
 
 /* Buttons */
 

@@ -23,9 +23,10 @@
 		<a href="/" class="logo"><img src="{{ static("images/logo_100.png") }}" alt="thiuff"></a>
 		{% if user.is_authenticated() %}
 			<ul class="nav">
-				<li class="main"><a href="/auth/logout/"><i class="fa fa-user"></i> {{ user.username }}</a></li>
-				<li><a href="#">Settings</a></li>
-				<li><a href="#">Groups</a></li>
+				<li class="main"><a href="{{ user.urls.view }}"><i class="fa fa-user"></i> {{ user.username }}</a></li>
+				<li><a href="/auth/logout/" title="Log out"><i class="fa fa-sign-out"></i></a></li>
+				<li><a href="/settings/">Settings</a></li>
+				<li><a href="/g/">Groups</a></li>
 			</ul>
 		{% else %}
 			<ul class="nav">

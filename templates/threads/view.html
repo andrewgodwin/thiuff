@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}{{ thread }}{% endblock %}
+
+{% block body_class %}thread-view{% endblock %}
+
+{% block content %}
+
+    <ul class="subnav">
+        <li><a href="#">
+            <i class="fa fa-flag"></i>
+            Report
+        </a></li>
+    </ul>
+
+    <span class="solo-icon" style="background: {{ thread.group.icon_colour }}">
+        <i class="fa fa-newspaper-o"></i>
+    </span>
+    <h2>
+        {% if thread.url %}<a href="{{ thread.url }}">{% endif %}
+        {{ thread.title }}
+        {% if thread.url %}</a>{% endif %}
+    </h2>
+    <p class="thread-meta">
+        Created <b>{{ thread.created.strftime("%d %b %Y") }}</b>
+        by <b><a href="{{ thread.author.urls.view }}">{{ thread.author }}</a></b>
+    </p>
+
+    {% if thread.body %}
+    <div class="thread-body formatted">
+        {{ thread.formatted_body|safe }}
+    </div>
+    {% endif %}
+
+    <hr>
+
+    Discussion!
+
+{% endblock %}

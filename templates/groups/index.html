@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Groups{% endblock %}
+
+{% block content %}
+
+
+    <ul class="subnav">
+        <li><a href="/g/create/">
+            <i class="fa fa-plus"></i>
+            Create group
+        </a></li>
+    </ul>
+
+    {% for group in groups %}
+        <a href="{{ group.urls.view }}">{{ group }}</a>
+    {% endfor %}
+
+{% endblock %}

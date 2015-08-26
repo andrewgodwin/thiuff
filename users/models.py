@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+import urlman
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager, validators
 from django_pgjson.fields import JsonBField
@@ -71,6 +73,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'username'
+
+    class urls(urlman.Urls):
+        view = "/u/{self.username}/"
+
+    def get_absolute_url(self):
+        return self.urls.view
+
+    def __unicode__(self):
+        return self.username
 
     def get_short_name(self):
         return self.username
