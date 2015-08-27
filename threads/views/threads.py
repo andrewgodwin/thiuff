@@ -1,16 +1,17 @@
-from django.http import Http404
+import datetime
 from django.shortcuts import render, redirect
 
 from thiuff.shortcuts import JsonResponse
 from ..forms.threads import CreateThreadForm
-from ..models import Thread, Group, Message
+from ..models import Thread, Message
+from ..decorators import group_from_name, thread_from_id, message_from_id
 
 
-def create(request, group_name):
+@group_from_name
+def create(request, group):
     """
     Creates a new Thread.
     """
-    group = Group.objects.get(name=group_name)
     if request.method == "POST":
         form = CreateThreadForm(request.POST)
         if form.is_valid():
@@ -30,17 +31,24 @@ def create(request, group_name):
     })
 
 
-def view(request, thread_id):
+@thread_from_id
+def view(request, thread):
     """
     Views a single thread page
     """
-    # Get the current thread object
-    try:
-        thread = Thread.objects.get(id=thread_id)
-    except Thread.DoesNotExist:
-        raise Http404("No such thread")
 
-    # Deal with a submission of a new message (JS or non-JS)
+    return render(request, "threads/view.html", {
+        "group": thread.group,
+        "thread": thread,
+    })
+
+
+@thread_from_id
+def create_top_level_message(request, thread):
+    """
+    Deals with creation of new top-level messages
+    (called Discussions in site vocabulary)
+    """
     if request.method == "POST":
         if request.POST.get("body"):
             message = Message.objects.create(
@@ -48,10 +56,48 @@ def view(request, thread_id):
                 author=request.user,
                 body=request.POST['body']
             )
-            if request.is_ajax():
-                return JsonResponse({"id": message.id})
+            return redirect(thread.urls.view)
 
-    return render(request, "threads/view.html", {
-        "group": thread.group,
+    return render(request, "threads/create_top_level_message.html", {
         "thread": thread,
+        "group": thread.group,
+    })
+
+
+@message_from_id
+def edit_message(request, message):
+    """
+    Deals with creation of new top-level messages
+    (called Discussions in site vocabulary)
+    """
+    if request.method == "POST":
+        if request.POST.get("body"):
+            message.body = request.POST['body']
+            message.edited = datetime.datetime.utcnow()
+            message.save()
+            return redirect(message.thread.urls.view)
+
+    return render(request, "threads/edit_message.html", {
+        "thread": message.thread,
+        "group": message.thread.group,
+        "message": message,
+    })
+
+
+@message_from_id
+def delete_message(request, message):
+    """
+    Deletes a message.
+    """
+
+    if request.method == "POST":
+        if request.POST.get("delete"):
+            message.deleted = datetime.datetime.utcnow()
+            message.save()
+        return redirect(message.thread.urls.view)
+
+    return render(request, "threads/delete_message.html", {
+        "thread": message.thread,
+        "group": message.thread.group,
+        "message": message,
     })

@@ -4,20 +4,20 @@
 
 {% block content %}
 
-    <ul class="subnav">
-        <li><a href="{{ group.urls.create_thread }}">
+    <aside class="subnav">
+        <a href="{{ group.urls.create_thread }}">
             <i class="fa fa-plus"></i>
             Create thread
-        </a></li>
-        <li><a href="#">
+        </a>
+        <a href="#">
             <i class="fa fa-cog"></i>
             Settings
-        </a></li>
-        <li><a href="#">
+        </a>
+        <a href="#">
             <i class="fa fa-legal"></i>
             Moderation
-        </a></li>
-    </ul>
+        </a>
+    </aside>
 
     <div class="threads">
         {% for thread in threads %}

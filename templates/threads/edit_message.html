@@ -1,0 +1,21 @@
+{% extends "lightbox.html" %}
+
+{% block title %}Edit message{% endblock %}
+
+{% block content %}
+
+    <form class="new-discussion" action="{{ message.urls.edit }}" method="POST">
+
+        <h1>Edit message</h1>
+
+        <p>Update your message below. We'll mark your message<br> as edited, but won't keep the original content.</p>
+
+        {% csrf_token %}
+        <div class="field">
+            <textarea name="body">{{ message.body }}</textarea>
+            <p class="help-text">Format using <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>.</p>
+        </div>
+        <input type="submit" value="Save" class="button">
+    </form>
+
+{% endblock %}

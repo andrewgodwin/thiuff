@@ -1,0 +1,21 @@
+{% extends "lightbox.html" %}
+
+{% block title %}Create new message{% endblock %}
+
+{% block content %}
+
+    <form class="new-discussion" action="{{ thread.urls.create_top_level_message }}" method="POST">
+
+        <h1>New discussion</h1>
+
+        <p>If nobody else is talking about a topic yet, or if you have a particularly<br> relevant insight, start a discussion. Otherwise, join in on an existing thread!</p>
+
+        {% csrf_token %}
+        <div class="field">
+            <textarea name="body" placeholder="Your message here."></textarea>
+            <p class="help-text">Format using <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>. Discussions in this group are <b>pre-moderated</b>.</p>
+        </div>
+        <input type="submit" value="Post" class="button">
+    </form>
+
+{% endblock %}

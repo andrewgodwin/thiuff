@@ -103,17 +103,31 @@ body {
     width: 1110px;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 30px;
     background: #fff;
     min-height: 300px;
     padding: 20px 20px;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
     position: relative;
 }
+    .content.short {
+        min-height: 0;
+    }
+    .content.transparent {
+        background: rgba(255, 255, 255, 0.3);
+        min-height: 0;
+    }
     body.lightbox .content {
         width: 550px;
         margin-top: 40px;
-        padding: 20px 20px;
         text-align: center;
+    }
+    .content.lightbox {
+        box-shadow: none;
+        width: 550px;
+        min-height: 50px;
+        text-align: center;
+        padding: 0;
     }
     .content .subnav {
         position: absolute;
@@ -121,16 +135,44 @@ body {
         right: 20px;
         z-index: 1;
     }
-    .content .subnav li {
+    .content .subnav a {
         float: right;
         margin-left: 20px;
-    }
-    .content .subnav a {
         color: #aaa;
         text-decoration: none;
     }
     .content .subnav a:hover {
         color: #888;
+    }
+
+.midnav {
+    width: 1150px;
+    margin: -10px auto 25px auto;
+    height: 25px;
+    line-height: 25px;
+    position: relative;
+}
+    .midnav a {
+        float: right;
+        font-weight: bold;
+        padding: 5px 9px;
+        border-radius: 2px;
+        text-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+        color: rgba(255, 255, 255, 0.6);
+    }
+    .midnav a:hover {
+        text-decoration: none;
+        background: rgba(0, 0, 0, 0.2);
+        color: rgba(255, 255, 255, 0.7);
+    }
+    .midnav a.main {
+        background: rgba(255, 255, 255, 0.3);
+        color: rgba(255, 255, 255, 0.9);
+        margin-left: 6px;
+    }
+    .midnav a.main:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.9);
     }
 
 /* General page layout */
@@ -216,6 +258,17 @@ hr {
         color: #333;
         font-size: 22px;
     }
+    .thread h4 a:hover {
+        text-decoration: none;
+        border-bottom: 1px solid #555;
+    }
+    .thread h4 .domain {
+        font-size: 60%;
+        color: #666;
+    }
+    .thread h4 .domain i {
+        font-size: 80%;
+    }
     .thread .stats {
         padding: 0 0 0 15px;
         color: #333;
@@ -243,6 +296,17 @@ hr {
     color: #333;
     font-size: 30px;
 }
+    .thread-view h2 a:hover {
+        text-decoration: none;
+        border-bottom: 1px solid #555;
+    }
+    .thread-view h2 .domain {
+        font-size: 60%;
+        color: #666;
+    }
+    .thread-view h2 .domain i {
+        font-size: 80%;
+    }
 
 .thread-meta {
     margin: 0 0 0 40px;
@@ -259,14 +323,62 @@ hr {
 
 .new-discussion {
 }
+    .new-discussion p {
+        font-size: 90%;
+        color: #444;
+    }
     .new-discussion .field textarea {
-        width: 550px;
-        height: 100px;
+        width: 540px;
+        height: 150px;
         font-family: inherit;
         font-size: 16px;
     }
     .new-discussion .field .help-text {
         color: #aaa;
+    }
+
+.discussions {
+    margin: 20px 0 0 0;
+}
+.discussion {
+    color: #222;
+}
+    .discussion .formatted {
+        margin: 0 0 0 20px;
+    }
+    .discussion .meta {
+        color: #999;
+        font-size: 90%;
+        margin: -10px 0 0 20px;
+    }
+    .discussion .icon {
+        float: left;
+        margin: 0 0 0 -45px;
+        padding: 0 10px 0 0;
+        width: 40px;
+        background: #369;
+        color: #fff;
+        font-size: 20px;
+        text-align: right;
+        line-height: 35px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+.expander {
+    color: #888;
+}
+    .expander:before {
+        font-family: FontAwesome;
+        content: "\f0da";
+        font-size: 110%;
+        padding: 0 8px 0 0;
+    }
+    .expander.expanded:before {
+        content: "\f0d7";
+    }
+    .expander:hover {
+        color: #555;
+        text-decoration: none;
     }
 
 /* Buttons */

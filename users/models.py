@@ -135,7 +135,7 @@ class UserAuth(models.Model):
         identifier = cls.normalise_identifier(id_type, identifier)
         # Get the right object
         try:
-            return UserAuth.objects.get(type=type, identifier=identifier)
+            return UserAuth.objects.get(type=id_type, identifier=identifier)
         except UserAuth.DoesNotExist:
             return None
 

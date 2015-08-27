@@ -1,0 +1,7 @@
+{% if request.is_ajax() %}
+    {% extends "base_lightbox.html" %}
+{% else %}
+    {% extends "base.html" %}
+{% endif %}
+
+{% block body_class %}lightbox{% endblock %}

@@ -1,4 +1,4 @@
-{% extends "base_lightbox.html" %}
+{% extends "lightbox.html" %}
 
 {% block title %}Login{% endblock %}
 
@@ -7,7 +7,7 @@
 	<div class="two-left">
 		<h1>Log in</h1>
 		<p>If you don't already have an account, you can <a href="/auth/signup/">sign up for one</a>.</p>
-        {% with submit_verb="Log in" %}
+        {% with submit_verb="Log in", action="/auth/login/" %}
 		    {% include "_form.html" %}
         {% endwith %}
 	</div>

@@ -5,21 +5,9 @@
 {% block content %}
 
     <div class="threads">
-        <div class="thread">
-            <span class="icon" style="background: #193E30"><i class="fa fa-newspaper-o"></i></span>
-            <h3>Django <span class="stats">4 replies / 14 comments</span></h3>
-            <h4>How to do asynchronous channel stuff?</h4>
-        </div>
-        <div class="thread">
-            <span class="icon"><i class="fa fa-comments-o"></i></span>
-            <h3>Science <span class="stats">2 replies / 134 comments</span></h3>
-            <h4>Is nuclear fission a reliable way of building the future, or will it have to be fusion?</h4>
-        </div>
-        <div class="thread">
-            <span class="icon"><i class="fa fa-picture-o"></i></span>
-            <h3>Android <span class="stats">334 replies / 11234 comments</span></h3>
-            <h4>Compositing failure!</h4>
-        </div>
+        {% for thread in threads %}
+            {% include "_threadbox.html" %}
+        {% endfor %}
     </div>
 
 {% endblock %}

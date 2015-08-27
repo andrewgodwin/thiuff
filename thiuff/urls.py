@@ -14,5 +14,8 @@ urlpatterns = [
     url(r'^g/([^/]+)/$', groups.view),
     url(r'^g/([^/]+)/t/create/$', threads.create),
     url(r'^g/[^/]+/t/([^/]+)/$', threads.view),
+    url(r'^g/[^/]+/t/([^/]+)/m/create/$', threads.create_top_level_message),
+    url(r'^g/[^/]+/t/[^/]+/m/([^/]+)/edit/$', threads.edit_message),
+    url(r'^g/[^/]+/t/[^/]+/m/([^/]+)/delete/$', threads.delete_message),
     url(r'^admin/', admin.site.urls),
 ]

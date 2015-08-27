@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 import urlman
 import markdown
+import urlparse
 
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
@@ -101,6 +102,7 @@ class Thread(models.Model):
     class urls(urlman.Urls):
         view = "{self.group.urls.view}t/{self.id}/"
         content = "{self.content_url}"
+        create_top_level_message = "{view}m/create/"
 
     def get_absolute_url(self):
         return self.urls.view
@@ -119,6 +121,19 @@ class Thread(models.Model):
         return self.urls.view
 
     @property
+    def content_domain(self):
+        if self.url:
+            try:
+                bits = urlparse.urlparse(self.url)
+                domain = bits.netloc
+                if domain.startswith("www."):
+                    domain = domain[4:]
+                return domain
+            except ValueError:
+                pass
+        return None
+
+    @property
     def formatted_body(self):
         """
         Formats the body to HTML.
@@ -134,7 +149,13 @@ class Thread(models.Model):
         """
         Returns all top-level (non-parented) messages
         """
-        return self.messages.filter(parent__isnull=True)
+        return self.messages.filter(
+            parent__isnull=True
+        ).annotate(
+            num_children=models.Count('children')
+        ).filter(
+            models.Q(num_children__gt=0) | models.Q(deleted__isnull=True)
+        )
 
 
 class ThreadInteraction(models.Model):
@@ -172,8 +193,25 @@ class Message(models.Model):
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True)
     edited = models.DateTimeField(null=True, blank=True)
+    deleted = models.DateTimeField(null=True, blank=True)
 
     score = models.FloatField(default=0, db_index=True)
+
+    class urls(urlman.Urls):
+        view = "{self.thread.urls.view}m/{self.id}/"
+        edit = "{view}edit/"
+        delete = "{view}delete/"
+
+    @property
+    def formatted_body(self):
+        """
+        Formats the body to HTML.
+        """
+        output = markdown.markdown(self.body, safe_mode=True, enable_attributes=False)
+        # I'm really paranoid.
+        if "<script" in output:
+            raise ValueError("XSS attempt detected")
+        return output
 
 
 class Reaction(models.Model):

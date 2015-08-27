@@ -4,53 +4,82 @@
 
 {% block body_class %}thread-view{% endblock %}
 
-{% block content %}
+{% block extra_head %}
+    <script src="{% static "js/thread.js" %}" type="text/javascript"></script>
+{% endblock %}
 
-    <ul class="subnav">
-        <li><a href="#">
-            <i class="fa fa-flag"></i>
-            Report
-        </a></li>
-    </ul>
+{% block naked_content %}
 
-    <span class="solo-icon" style="background: {{ thread.group.icon_colour }}">
-        <i class="fa fa-newspaper-o"></i>
-    </span>
-    <h2>
-        {% if thread.url %}<a href="{{ thread.url }}">{% endif %}
-        {{ thread.title }}
-        {% if thread.url %}</a>{% endif %}
-    </h2>
-    <p class="thread-meta">
-        Created <b>{{ thread.created.strftime("%d %b %Y") }}</b>
-        by <b><a href="{{ thread.author.urls.view }}">{{ thread.author }}</a></b>
-    </p>
+    <div class="content short">
+        <aside class="subnav">
+            <a href="#">
+                <i class="fa fa-flag"></i>
+                Report
+            </a>
+        </aside>
 
-    {% if thread.body %}
-    <div class="thread-body formatted">
-        {{ thread.formatted_body|safe }}
-    </div>
-    {% endif %}
+        <span class="solo-icon" style="background: {{ thread.group.icon_colour }}">
+            <i class="fa fa-newspaper-o"></i>
+        </span>
+        <h2>
+            {% if thread.url %}<a href="{{ thread.url }}">{% endif %}
+            {{ thread.title }}
+            {% if thread.url %}
+                <span class="domain">
+                    {{ thread.content_domain }}
+                    <i class="fa fa-external-link"></i>
+                </span>
+                </a>
+            {% endif %}
+        </h2>
+        <p class="thread-meta">
+            Created <b>{{ thread.created.strftime("%d %b %Y %H:%M") }}</b>
+            by <b><a href="{{ thread.author.urls.view }}">{{ thread.author }}</a></b>
+        </p>
 
-    <hr>
-
-    <div class="discussions">
-        {% for message in thread.top_level_messages %}
-            {{ message.body }}
-        {% else %}
-            <p class="empty">No discussions yet.</p>
-        {% endfor %}
-    </div>
-
-    <hr>
-
-    <form class="new-discussion" action="." method="POST">
-        {% csrf_token %}
-        <div class="field">
-            <textarea name="body"></textarea>
-            <p class="help-text"><a href="#">Formatting help</a></p>
+        {% if thread.body %}
+        <div class="thread-body formatted">
+            {{ thread.formatted_body|safe }}
         </div>
-        <input type="submit" value="Post" class="button">
-    </form>
+        {% endif %}
+
+    </div>
+
+    <div class="midnav">
+        <a href="{{ thread.urls.create_top_level_message }}" class="main opt-lightbox"><i class="fa fa-plus"></i> New discussion</a>
+    </div>
+
+    {% for message in thread.top_level_messages %}
+    <div class="content short discussion">
+        <span class="icon" style="background: {{ thread.group.icon_colour }}">
+            <i class="fa fa-comments-o"></i>
+        </span>
+        {% if message.deleted %}
+            <div class="formatted">
+                <p class="empty">
+                    (deleted {{ message.deleted.strftime("%d %b %Y at %H:%M") }})
+                </p>
+            </div>
+        {% else %}
+            <aside class="subnav">
+                <a href="{{ message.urls.edit }}" class="opt-lightbox"><i class="fa fa-cog"></i> Edit</a>
+                <a href="{{ message.urls.delete }}" class="opt-lightbox"><i class="fa fa-trash"></i> Delete</a>
+            </aside>
+            <div class="formatted">
+                {{ message.formatted_body|safe }}
+            </div>
+        {% endif %}
+        <p class="meta">
+            {% if message.edited %}
+                Edited <b>{{ message.created.strftime("%d %b %Y at %H:%M") }}</b>
+            {% else %}
+                Posted <b>{{ message.created.strftime("%d %b %Y at %H:%M") }}</b>
+            {% endif %}
+            by <b><a href="{{ message.author.urls.view }}">{{ thread.author }}</a></b>
+        </p>
+    </div>
+    {% else %}
+        <p class="empty">No discussions yet.</p>
+    {% endfor %}
 
 {% endblock %}
