@@ -77,6 +77,23 @@
             {% endif %}
             by <b><a href="{{ message.author.urls.view }}">{{ thread.author }}</a></b>
         </p>
+        <div class="replies">
+            {% for reply in message.children.all() %}
+                <div class="reply">
+                    <div class="formatted">
+                        {{ reply.formatted_body|safe }}
+                    </div>
+                </div>
+            {% else %}
+                <p class="empty">No replies yet.</p>
+            {% endfor %}
+            <form class="reply-form" action="#" method="POST">
+                {% csrf_token %}
+                <textarea></textarea>
+                <a class="formatting" href="#">Formatting Guide</a>
+                <button class="button reply">Post</button>
+            </form>
+        </div>
     </div>
     {% else %}
         <p class="empty">No discussions yet.</p>

@@ -113,6 +113,11 @@ body {
     .content.short {
         min-height: 0;
     }
+    .content.discussion {
+        min-height: 0;
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
     .content.transparent {
         background: rgba(255, 255, 255, 0.3);
         min-height: 0;
@@ -363,6 +368,39 @@ hr {
         line-height: 35px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     }
+
+.replies {
+    margin: 20px 0 0 40px;
+}
+    .replies form {
+        overflow: hidden;
+        position: relative;
+    }
+    .replies form textarea {
+        float: left;
+        width: 85%;
+        height: 45px;
+        font-family: inherit;
+        border: 1px solid #ccc;
+        padding: 8px;
+    }
+    .replies form textarea:focus {
+        outline: 0;
+        border-color: #222;
+    }
+    .replies form .formatting {
+        float: left;
+        color: #777;
+        margin: 0 0 0 5px;
+        padding: 9px 8px;
+        font-size: 12px;
+    }
+    .replies form button.reply {
+        float: left;
+        margin: 0 0 0 13px;
+        padding: 4px 8px;
+    }
+
 
 .expander {
     color: #888;
