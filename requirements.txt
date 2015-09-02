@@ -4,3 +4,5 @@ urlman==1.0
 Jinja2==1.8
 jinja2-django-tags==0.2
 markdown==2.6.2
+Twisted==15.3.0
+autobahn==0.10.5.post2

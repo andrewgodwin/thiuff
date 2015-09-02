@@ -39,6 +39,9 @@ thiuff.toggleReplies = function (event) {
     }
 }
 
+// Add things to streamer
+thiuff.mainStreamer.addStream("thread-" + document.body.dataset.threadId);
+
 $(function () {
     // Reply form handler
     $(".reply-form button").click(thiuff.postReply);

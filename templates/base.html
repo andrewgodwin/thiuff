@@ -8,12 +8,9 @@
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="{% static "css/featherlight.min.css" %}" type="text/css" media="screen" />
 	<link rel="stylesheet" href="{% static "css/style.css" %}" type="text/css" media="screen" />
-	<script src="{% static "js/jquery-1.11.3.min.js" %}" type="text/javascript"></script>
-	<script src="{% static "js/featherlight.min.js" %}" type="text/javascript"></script>
-	<script src="{% static "js/thiuff.js" %}" type="text/javascript"></script>
 	{% block extra_head %}{% endblock %}
 </head>
-<body class="{% block body_class %}{% endblock %}">
+<body class="{% block body_class %}{% endblock %}" data-stream-url="{{ settings.WEBSOCKET_URL }}?session={{ request.session.session_key }}" {% block body_attrs %}{% endblock %}>
 
 	<div class="background">
 		<div class="gradient"></div>
@@ -49,5 +46,9 @@
 	</div>
 	{% endblock %}
 
+	<script src="{% static "js/jquery-1.11.3.min.js" %}" type="text/javascript"></script>
+	<script src="{% static "js/featherlight.min.js" %}" type="text/javascript"></script>
+	<script src="{% static "js/thiuff.js" %}" type="text/javascript"></script>
+	{% block extra_js %}{% endblock %}
 </body>
 </html>

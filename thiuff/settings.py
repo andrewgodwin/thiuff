@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'threads',
     'users',
 ]
@@ -73,7 +74,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': False,
         'OPTIONS': {
-            'environment': 'thiuff.environment.environment',
+            'environment': 'thiuff.template_backend.environment',
             'extensions': [
                 'jinja2.ext.with_',
                 'jdj_tags.extensions.DjangoCompat',
@@ -141,6 +142,17 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+
+
+# Channels
+
+CHANNEL_BACKENDS = {
+    "default": {
+        "BACKEND": "channels.backends.database.DatabaseChannelBackend",
+    },
+}
+
+WEBSOCKET_URL = "ws://localhost:9000"
 
 
 # Disallowed group names

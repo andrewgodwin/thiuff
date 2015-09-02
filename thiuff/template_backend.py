@@ -2,6 +2,7 @@ import sys
 import jinja2
 from jinja2.ext import Extension, nodes
 
+from django.conf import settings
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.template import TemplateDoesNotExist, TemplateSyntaxError
 from django.template.backends import jinja2 as jinja2backend
@@ -13,7 +14,7 @@ from django.utils.module_loading import import_string
 def environment(**options):
     env = jinja2.Environment(**options)
     env.globals.update({
-        'static': staticfiles_storage.url,
+        'settings': settings,
     })
     return env
 

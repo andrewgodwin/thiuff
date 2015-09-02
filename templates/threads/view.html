@@ -4,13 +4,15 @@
 
 {% block body_class %}thread-view{% endblock %}
 
-{% block extra_head %}
+{% block extra_js %}
     <script src="{% static "js/thread.js" %}" type="text/javascript"></script>
 {% endblock %}
 
+{% block body_attrs %}data-thread-id="{{ thread.id }}"{% endblock %}
+
 {% block naked_content %}
 
-    <div class="content short">
+    <div class="content short js-thread">
         <aside class="subnav">
             <a href="#">
                 <i class="fa fa-flag"></i>
@@ -77,7 +79,7 @@
         {% endif %}
         <a class="expander expanded reply-toggle">
             {% if message.replies %}
-                Replies
+                All replies
             {% else %}
                 Reply
             {% endif %}

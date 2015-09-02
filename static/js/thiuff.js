@@ -1,4 +1,59 @@
 window.thiuff = window.thiuff || {};
+window.console = window.console || {log: function () {}};
+
+thiuff.Streamer = function (url, streams) {
+    // Check we even have websockets
+    if (!window.WebSocket) {
+        console.log("No websocket functionality.")
+        return;
+    }
+    // Add streams
+    if (streams) {
+        this.streams = streams;
+    }
+    // Connect
+    this.url = url;
+    this.connect();
+}
+thiuff.Streamer.prototype = {
+    url: null,
+    streams: [],
+    sentStreams: false,
+    connectFailures: 0,
+    connect: function () {
+        var self = this;
+        this.sentStreams = false;
+        this.socket = new WebSocket(this.url);
+        this.socket.onopen = function () {
+            this.send("streams " + self.streams.join(" "));
+            this.sentStreams = true;
+            self.connectFailures = 0;
+            console.log("Streamer open for " + self.streams.join(" "));
+        }
+        this.socket.onerror = function (err) {
+            self.connectFailures += 1;
+            var retryTime = Math.min(120, 5 * self.connectFailures);
+            window.setTimeout(self.connect, retryTime * 1000);
+            console.log("Streamer error: " + err + "; retrying in " + retryTime + " seconds");
+        }
+        this.socket.onclose = function () {
+            console.log("Streamer closed.");
+        }
+        this.socket.onmessage = function (msg) {
+            console.log("Streamer message:" + msg);
+        }
+    },
+    addStream: function (stream) {
+        this.streams.push(stream);
+        if (this.sentStreams) {
+            this.socket.send("streams " + stream);
+            console.log("Added additional stream " + stream);
+        }
+    }
+}
+
+// Make one global instance for streaming stuff
+thiuff.mainStreamer = new thiuff.Streamer(document.body.dataset.streamUrl);
 
 $(function () {
     // Hook up any optional-lightbox links
