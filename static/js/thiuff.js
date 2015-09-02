@@ -30,9 +30,6 @@ thiuff.Streamer.prototype = {
             self.connectFailures = 0;
             console.log("Streamer open for " + self.streams.join(" "));
         }
-        this.socket.onerror = function (err) {
-            console.log("Streamer error: " + err);
-        }
         this.socket.onclose = function () {
             self.connectFailures += 1;
             var retryTime = Math.min(120, 5 * self.connectFailures);
