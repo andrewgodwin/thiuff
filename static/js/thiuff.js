@@ -31,13 +31,13 @@ thiuff.Streamer.prototype = {
             console.log("Streamer open for " + self.streams.join(" "));
         }
         this.socket.onerror = function (err) {
-            self.connectFailures += 1;
-            var retryTime = Math.min(120, 5 * self.connectFailures);
-            window.setTimeout(self.connect, retryTime * 1000);
-            console.log("Streamer error: " + err + "; retrying in " + retryTime + " seconds");
+            console.log("Streamer error: " + err);
         }
         this.socket.onclose = function () {
-            console.log("Streamer closed.");
+            self.connectFailures += 1;
+            var retryTime = Math.min(120, 5 * self.connectFailures);
+            window.setTimeout(self.connect.bind(self), retryTime * 1000);
+            console.log("Streamer closed; retrying in " + retryTime + " seconds");
         }
         this.socket.onmessage = function (msg) {
             console.log("Streamer message:" + msg);
