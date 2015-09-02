@@ -51,9 +51,15 @@
 
     {% for message in thread.top_level_messages %}
     <div class="content short discussion">
-        <span class="icon" style="background: {{ thread.group.icon_colour }}">
-            <i class="fa fa-comments-o"></i>
-        </span>
+        <img class="icon" src="{{ message.author.urls.avatar_40 }}">
+        <p class="meta">
+            <b><a href="{{ message.author.urls.view }}">{{ thread.author }}</a></b>
+            {% if message.edited %}
+                {{ message.edited.strftime("%d %b %Y at %H:%M") }} (edited)
+            {% else %}
+                {{ message.created.strftime("%d %b %Y at %H:%M") }}
+            {% endif %}
+        </p>
         {% if message.deleted %}
             <div class="formatted">
                 <p class="empty">
@@ -69,31 +75,33 @@
                 {{ message.formatted_body|safe }}
             </div>
         {% endif %}
-        <p class="meta">
-            {% if message.edited %}
-                Edited <b>{{ message.created.strftime("%d %b %Y at %H:%M") }}</b>
+        <a class="expander expanded reply-toggle">
+            {% if message.replies %}
+                Replies
             {% else %}
-                Posted <b>{{ message.created.strftime("%d %b %Y at %H:%M") }}</b>
+                Reply
             {% endif %}
-            by <b><a href="{{ message.author.urls.view }}">{{ thread.author }}</a></b>
-        </p>
-        <div class="replies">
-            {% for reply in message.children.all() %}
-                <div class="reply">
-                    <div class="formatted">
-                        {{ reply.formatted_body|safe }}
-                    </div>
-                </div>
+        </a>
+        <div class="replies main">
+            {% for reply in message.replies %}
+                {% include "threads/_reply.html" %}
             {% else %}
                 <p class="empty">No replies yet.</p>
             {% endfor %}
-            <form class="reply-form" action="#" method="POST">
+            <form class="reply-form" action="{{ message.urls.reply }}" method="POST">
                 {% csrf_token %}
-                <textarea></textarea>
+                <textarea name="body"></textarea>
                 <a class="formatting" href="#">Formatting Guide</a>
                 <button class="button reply">Post</button>
             </form>
         </div>
+        {% if message.replies %}
+            <div class="replies preview">
+                {% with reply=message.replies[-1] %}
+                    {% include "threads/_reply.html" %}
+                {% endwith %}
+            </div>
+        {% endif %}
     </div>
     {% else %}
         <p class="empty">No discussions yet.</p>

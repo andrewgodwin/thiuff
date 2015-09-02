@@ -60,27 +60,33 @@ body {
         line-height: 25px;
         z-index: 1;
     }
-    .header .nav li {
+    .header .nav a {
         float: right;
         margin: 0 4px 0 4px;
         font-weight: bold;
-    }
-    .header .nav li a {
         padding: 5px 9px;
         border-radius: 2px;
     }
-    .header .nav li a:hover {
+    .header .nav a:hover {
         background: rgba(0, 0, 0, 0.2);
         color: rgba(255, 255, 255, 0.7);
     }
-    .header .nav li.main a {
+    .header .nav a.main {
         background: rgba(255, 255, 255, 0.3);
         color: rgba(255, 255, 255, 0.7);
         margin-left: 6px;
     }
-    .header .nav li.main a:hover {
+    .header .nav a.main:hover {
         background: rgba(255, 255, 255, 0.2);
         color: rgba(255, 255, 255, 0.9);
+    }
+    .header .nav a img {
+        position: relative;
+        top: -2px;
+        width: 20px;
+        height: 20px;
+        vertical-align: middle;
+        margin: 0 3px 0 0;
     }
     .header a {
         color: inherit;
@@ -105,7 +111,7 @@ body {
     margin-right: auto;
     margin-bottom: 30px;
     background: #fff;
-    min-height: 300px;
+    min-height: 100px;
     padding: 20px 20px;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
     position: relative;
@@ -133,6 +139,16 @@ body {
         min-height: 50px;
         text-align: center;
         padding: 0;
+        margin-bottom: 0;
+        padding: 20px 20px 20px 20px;
+    }
+    .featherlight .featherlight-close-icon {
+        margin: 7px 6px 0 0;
+        background: none;
+    }
+    .featherlight .featherlight-content {
+        padding: 0;
+        border-bottom: 0;
     }
     .content .subnav {
         position: absolute;
@@ -191,9 +207,15 @@ h1 {
     h1:nth-child(1) {
         margin-top: 0;
     }
-    .lightbox h1 {
+    .content.lightbox h1 {
         text-align: center;
-        font-size: 30px;
+        font-size: 18px;
+        background: #3465a4;
+        background: #eee;
+        border-bottom: 1px solid #ddd;
+        color: #444;
+        padding: 10px 0;
+        margin: -20px -20px 15px -20px;
     }
 
 p {
@@ -220,6 +242,11 @@ hr {
     width: 550px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.formatted p {
+    line-height: 140%;
+    margin-bottom: 0.5em;
 }
 
 /* Thread indexes */
@@ -336,7 +363,7 @@ hr {
         width: 540px;
         height: 150px;
         font-family: inherit;
-        font-size: 16px;
+        font-size: 14px;
     }
     .new-discussion .field .help-text {
         color: #aaa;
@@ -348,19 +375,27 @@ hr {
 .discussion {
     color: #222;
 }
-    .discussion .formatted {
-        margin: 0 0 0 20px;
-    }
     .discussion .meta {
         color: #999;
-        font-size: 90%;
-        margin: -10px 0 0 20px;
+        font-size: 80%;
+        margin: -3px 0 2px 0;
+    }
+    .discussion > .meta {
+        margin-left: 5px;
+    }
+    .discussion > .formatted {
+        margin: 0 0 0 5px;
+    }
+    .discussion .meta b {
+        margin-right: 5px;
+        font-size: 110%;
     }
     .discussion .icon {
         float: left;
-        margin: 0 0 0 -45px;
-        padding: 0 10px 0 0;
-        width: 40px;
+        margin: 0 0 0 -40px;
+        padding: 0;
+        width: 35px;
+        height: 35px;
         background: #369;
         color: #fff;
         font-size: 20px;
@@ -368,13 +403,37 @@ hr {
         line-height: 35px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     }
+    .discussion .expander {
+        margin-left: 10px;
+        font-size: 90%;
+    }
 
 .replies {
-    margin: 20px 0 0 40px;
+    margin: 20px 0 0 45px;
+    zoom: 1;
 }
+    .replies.preview {
+        opacity: 0.5;
+        display: none;
+    }
+    .replies .reply {
+        position: relative;
+        margin: 0 0 15px 0;
+    }
+    .replies .reply:last-child {
+        margin-bottom: 0;
+    }
+    .replies .icon {
+        margin-top: 4px;
+        margin-left: -35px;
+        width: 25px;
+        height: 25px;
+        box-shadow: none;
+    }
     .replies form {
         overflow: hidden;
         position: relative;
+        clear: left;
     }
     .replies form textarea {
         float: left;
@@ -403,13 +462,14 @@ hr {
 
 
 .expander {
+    cursor: pointer;
     color: #888;
 }
     .expander:before {
         font-family: FontAwesome;
         content: "\f0da";
         font-size: 110%;
-        padding: 0 8px 0 0;
+        padding: 0 3px 0 0;
     }
     .expander.expanded:before {
         content: "\f0d7";
@@ -574,9 +634,12 @@ table.nice {
  *****************
  *****************/
 
-@media (max-width: 1150px) {
+@media (max-width: 1170px) {
 
     .content {
+        width: 710px;
+    }
+    .midnav {
         width: 750px;
     }
 
@@ -592,6 +655,9 @@ table.nice {
 @media (max-width: 767px) {
 
     .content {
+        width: 100%;
+    }
+    .midnav {
         width: 100%;
     }
 

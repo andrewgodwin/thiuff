@@ -5,6 +5,7 @@ import markdown
 import urlparse
 
 from django.db import models
+from django.utils.functional import cached_property
 from django.contrib.postgres.fields import ArrayField
 from django_pgjson.fields import JsonBField
 
@@ -199,6 +200,7 @@ class Message(models.Model):
 
     class urls(urlman.Urls):
         view = "{self.thread.urls.view}m/{self.id}/"
+        reply = "{view}reply/"
         edit = "{view}edit/"
         delete = "{view}delete/"
 
@@ -212,6 +214,13 @@ class Message(models.Model):
         if "<script" in output:
             raise ValueError("XSS attempt detected")
         return output
+
+    @cached_property
+    def replies(self):
+        """
+        Reutrns replies in date order.
+        """
+        return list(self.children.order_by("created"))
 
 
 class Reaction(models.Model):

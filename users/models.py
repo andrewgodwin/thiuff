@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import hashlib
 import urlman
 
 from django.db import models
@@ -76,6 +77,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     class urls(urlman.Urls):
         view = "/u/{self.username}/"
+        avatar_40 = "http://www.gravatar.com/avatar/{self.gravatar_hash}?s=40"
 
     def get_absolute_url(self):
         return self.urls.view
@@ -100,6 +102,15 @@ class User(AbstractBaseUser, PermissionsMixin):
             return None
         else:
             return auth.user
+
+    @property
+    def gravatar_hash(self):
+        email_auth = self.auths.filter(type="email").first()
+        if email_auth:
+            email = email_auth.identifier
+        else:
+            email = "anonymous@thiuff.com"
+        return hashlib.md5(email.strip().lower()).hexdigest()
 
 
 class UserAuth(models.Model):

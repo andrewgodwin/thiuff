@@ -1,0 +1,10 @@
+<div class="reply">
+    <img class="icon" src="{{ message.author.urls.avatar_40 }}">
+    <p class="meta">
+        <b>{{ reply.author }}</b>
+        {{ reply.created.strftime("%d %b %Y at %H:%M") }}
+    </p>
+    <div class="formatted">
+        {{ reply.formatted_body|safe }}
+    </div>
+</div>

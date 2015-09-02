@@ -1,5 +1,6 @@
 import datetime
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 
 from thiuff.shortcuts import JsonResponse
 from ..forms.threads import CreateThreadForm
@@ -101,3 +102,26 @@ def delete_message(request, message):
         "group": message.thread.group,
         "message": message,
     })
+
+
+@message_from_id
+def create_reply_message(request, parent):
+    """
+    Adds a reply to a thread.
+    """
+    if request.method == "POST":
+        if request.POST.get("body"):
+            message = Message.objects.create(
+                thread=parent.thread,
+                parent=parent,
+                author=request.user,
+                body=request.POST['body']
+            )
+            if request.is_ajax():
+                return JsonResponse({
+                    "id": str(message.id),
+                })
+            else:
+                return redirect(message.thread.urls.view)
+
+    return HttpResponse("Invalid method", status_code=405)
