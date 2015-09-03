@@ -14,9 +14,9 @@ thiuff.postReply = function (event) {
         data: data,
         method: "POST"
     }).done(function (data) {
-        alert(data);
+        form.find("textarea").val("");
     }).fail(function () {
-        alert("fail");
+        alert("Failed to post message.");
     });
     // Don't do anything
     event.preventDefault();
@@ -39,12 +39,30 @@ thiuff.toggleReplies = function (event) {
     }
 }
 
-// Add things to streamer
+// Adds a reply to the reply div for the parent message given by
+// the ID. Expects the parent message ID and full HTML for the reply.
+thiuff.addReplyHtml = function (discussionId, replyHtml) {
+    $(".discussion[data-discussion-id='" + discussionId + "']").find(".reply-form").before(replyHtml);
+    $(".discussion[data-discussion-id='" + discussionId + "']").find(".replies.preview").html(replyHtml);
+}
+
+// Handles "reply" type messages
+thiuff.handleReply = function (data) {
+    thiuff.addReplyHtml(data.discussion_id, data.html);
+}
+
+// Listen on the streamer for new replies
 thiuff.mainStreamer.addStream("thread-" + document.body.dataset.threadId);
+thiuff.mainStreamer.addHandler("reply", thiuff.handleReply);
 
 $(function () {
     // Reply form handler
     $(".reply-form button").click(thiuff.postReply);
+    $('.reply-form textarea').keydown(function (event) {
+        if ((event.keyCode == 10 || event.keyCode == 13) && event.ctrlKey) {
+            thiuff.postReply(event);
+        }
+    });
     // Reply expand/contracter
     $(".discussion .expander").click(thiuff.toggleReplies);
     // Contract all replies on page load

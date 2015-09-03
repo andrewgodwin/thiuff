@@ -2,6 +2,7 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from threads.views import front, groups, threads
+from threads import consumers
 from users.views import auth, users
 
 urlpatterns = [

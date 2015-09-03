@@ -1,11 +1,15 @@
 from __future__ import unicode_literals
 
-import urlman
+import channels
+import htmlmin
+import json
 import markdown
+import urlman
 import urlparse
 
 from django.db import models
 from django.utils.functional import cached_property
+from django.template.loader import get_template
 from django.contrib.postgres.fields import ArrayField
 from django_pgjson.fields import JsonBField
 
@@ -218,9 +222,42 @@ class Message(models.Model):
     @cached_property
     def replies(self):
         """
-        Reutrns replies in date order.
+        Returns replies in date order.
         """
         return list(self.children.order_by("created"))
+
+    def save(self, *args, **kwargs):
+        """
+        Notifies channels on save.
+        """
+        super(Message, self).save(*args, **kwargs)
+        self.send_stream()
+
+    def send_stream(self):
+        """
+        Sends a notification of us to our thread's stream.
+        """
+        data = {
+            "id": str(self.id),
+            "thread_id": str(self.thread_id),
+        }
+        if self.parent:
+            data['type'] = "reply"
+            data['discussion_id'] = str(self.parent_id)
+            data['html'] = htmlmin.minify(self.reply_html())
+        else:
+            data['type'] = "discussion"
+        channels.Group("stream-thread-%s" % self.thread.id).send(
+            content=json.dumps(data),
+        )
+
+    def reply_html(self):
+        """
+        Renders the HTML for this as a reply chunk.
+        """
+        template = get_template("threads/_reply.html")
+        return template.render({"reply": self})
+
 
 
 class Reaction(models.Model):

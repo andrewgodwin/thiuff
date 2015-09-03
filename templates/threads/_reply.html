@@ -1,5 +1,5 @@
-<div class="reply">
-    <img class="icon" src="{{ message.author.urls.avatar_40 }}">
+<div class="reply" data-reply-id="{{ reply.id }}">
+    <img class="icon" src="{{ reply.author.urls.avatar_40 }}">
     <p class="meta">
         <b>{{ reply.author }}</b>
         {{ reply.created.strftime("%d %b %Y at %H:%M") }}

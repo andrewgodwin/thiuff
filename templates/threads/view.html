@@ -52,7 +52,7 @@
     </div>
 
     {% for message in thread.top_level_messages %}
-    <div class="content short discussion">
+    <div class="content short discussion" data-discussion-id="{{ message.id }}">
         <img class="icon" src="{{ message.author.urls.avatar_40 }}">
         <p class="meta">
             <b><a href="{{ message.author.urls.view }}">{{ thread.author }}</a></b>

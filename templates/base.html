@@ -10,7 +10,12 @@
 	<link rel="stylesheet" href="{% static "css/style.css" %}" type="text/css" media="screen" />
 	{% block extra_head %}{% endblock %}
 </head>
-<body class="{% block body_class %}{% endblock %}" data-stream-url="{{ settings.WEBSOCKET_URL }}?session={{ request.session.session_key }}" {% block body_attrs %}{% endblock %}>
+<body
+	class="{% block body_class %}{% endblock %}"
+	data-stream-url="{{ settings.WEBSOCKET_URL }}?session_key={{ request.session.session_key }}"
+	{% if user.is_authenticated() %}data-user-id="{{ user.id }}"{% endif %}
+	{% block body_attrs %}{% endblock %}
+>
 
 	<div class="background">
 		<div class="gradient"></div>
