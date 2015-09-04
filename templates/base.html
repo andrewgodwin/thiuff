@@ -17,6 +17,16 @@
 	{% block body_attrs %}{% endblock %}
 >
 
+	{% with flashes=get_flashes(request) %}
+		{% if flashes %}
+			<div class="flashes">
+				{% for type, flash in flashes %}
+					<div class="flash flash-{{ type }}">{{ flash }}</div>
+				{% endfor %}
+			</div>
+		{% endif %}
+	{% endwith %}
+
 	<div class="background">
 		<div class="gradient"></div>
 	</div>

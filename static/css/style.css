@@ -249,6 +249,36 @@ hr {
     margin-bottom: 0.5em;
 }
 
+.flashes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 30px 0 0 0;
+    width: 100%;
+    z-index: 10;
+}
+    .flashes .flash {
+        width: 300px;
+        margin: 10px auto;
+        padding: 15px 20px;
+        background: #eff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    .flashes .flash:before {
+        font-family: FontAwesome;
+        content: "\f05a";
+        font-size: 110%;
+        padding: 0 10px 0 0;
+        color: #4A6FA5;
+    }
+    .flashes .flash-error {
+        background: #fee;
+    }
+    .flashes .flash-error:before {
+        content: "\f071";
+        color: #500;
+    }
+
 /* Thread indexes */
 
 .groups {
@@ -422,6 +452,12 @@ hr {
     }
     .replies .reply:last-child {
         margin-bottom: 0;
+    }
+    .replies .reply .subnav {
+        display: none;
+    }
+    .replies .reply:hover .subnav {
+        display: block;
     }
     .replies .icon {
         margin-top: 4px;

@@ -1,0 +1,24 @@
+{% extends "lightbox.html" %}
+
+{% block title %}Report{% endblock %}
+
+{% block content %}
+
+    <form class="report" action="{{ report_url }}" method="POST">
+
+        <h1>Report</h1>
+
+        <p>Report this to have an administrator or moderator look at it, and potentially remove it and/or ban the user based on our <a href="/coc/">code of conduct</a>.</p>
+
+        {% csrf_token %}
+        {% with field=form.type %}
+            {% include "_field.html" %}
+        {% endwith %}
+        {% with field=form.comment %}
+            {% include "_field.html" %}
+        {% endwith %}
+        <input type="submit" value="Cancel" name="cancel" class="button js-cancel">
+        <input type="submit" value="Report" name="report" class="button">
+    </form>
+
+{% endblock %}

@@ -1,10 +1,11 @@
 import datetime
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
-from thiuff.shortcuts import JsonResponse
-from ..forms.threads import CreateThreadForm
-from ..models import Thread, Message
+from thiuff.shortcuts import JsonResponse, flash
+from ..forms.threads import CreateThreadForm, ReportForm
+from ..models import Thread, Message, Report
 from ..decorators import group_from_name, thread_from_id, message_from_id
 
 
@@ -44,6 +45,40 @@ def view(request, thread):
     })
 
 
+@login_required
+@thread_from_id
+def report_thread(request, thread):
+    """
+    Makes a report for a thread.
+    """
+
+    # Cancel button support
+    if request.POST.get("cancel"):
+        return redirect(thread.urls.view)
+
+    # Form processing
+    if request.method == "POST":
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            Report.objects.create(
+                thread=thread,
+                type=form.cleaned_data['type'],
+                comment=form.cleaned_data['comment'],
+                reporter=request.user,
+                accused=thread.author,
+            )
+            flash(request, "Report submitted. Thanks!")
+        return redirect(thread.urls.view)
+    else:
+        form = ReportForm()
+
+    return render(request, "threads/report.html", {
+        "form": form,
+        "report_url": thread.urls.report,
+    })
+
+
+@login_required
 @thread_from_id
 def create_top_level_message(request, thread):
     """
@@ -65,6 +100,7 @@ def create_top_level_message(request, thread):
     })
 
 
+@login_required
 @message_from_id
 def edit_message(request, message):
     """
@@ -85,6 +121,7 @@ def edit_message(request, message):
     })
 
 
+@login_required
 @message_from_id
 def delete_message(request, message):
     """
@@ -104,6 +141,7 @@ def delete_message(request, message):
     })
 
 
+@login_required
 @message_from_id
 def create_reply_message(request, parent):
     """
@@ -125,3 +163,36 @@ def create_reply_message(request, parent):
                 return redirect(message.thread.urls.view)
 
     return HttpResponse("Invalid method", status_code=405)
+
+
+@login_required
+@message_from_id
+def report_message(request, message):
+    """
+    Makes a report for a message.
+    """
+
+    # Cancel button support
+    if request.POST.get("cancel"):
+        return redirect(message.thread.urls.view)
+
+    # Form processing
+    if request.method == "POST":
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            Report.objects.create(
+                message=message,
+                type=form.cleaned_data['type'],
+                comment=form.cleaned_data['comment'],
+                reporter=request.user,
+                accused=message.author,
+            )
+            flash(request, "Report submitted. Thanks!")
+        return redirect(message.thread.urls.view)
+    else:
+        form = ReportForm()
+
+    return render(request, "threads/report.html", {
+        "form": form,
+        "report_url": message.urls.report,
+    })

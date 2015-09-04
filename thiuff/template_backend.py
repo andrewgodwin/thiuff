@@ -10,11 +10,14 @@ from django.template.backends.utils import csrf_input_lazy, csrf_token_lazy
 from django.utils import six
 from django.utils.module_loading import import_string
 
+from .shortcuts import get_flashes
+
 
 def environment(**options):
     env = jinja2.Environment(**options)
     env.globals.update({
         'settings': settings,
+        'get_flashes': get_flashes,
     })
     return env
 

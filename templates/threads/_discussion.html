@@ -1,0 +1,64 @@
+<div class="content short discussion" data-discussion-id="{{ message.id }}">
+    <img class="icon" src="{{ message.author.urls.avatar_40 }}">
+    <p class="meta">
+        <b><a href="{{ message.author.urls.view }}">{{ thread.author }}</a></b>
+        {% if message.edited %}
+            {{ message.edited.strftime("%d %b %Y at %H:%M") }} (edited)
+        {% else %}
+            {{ message.created.strftime("%d %b %Y at %H:%M") }}
+        {% endif %}
+    </p>
+    {% if message.deleted %}
+        <div class="formatted js-body">
+            <p class="empty">
+                (deleted {{ message.deleted.strftime("%d %b %Y at %H:%M") }})
+            </p>
+        </div>
+    {% else %}
+        <aside class="subnav">
+            {% if message.deleted %}
+                {% if user and message.has_permission(user, "undelete") %}
+                    <a href="{{ message.urls.undelete }}" class="opt-lightbox"><i class="fa fa-trash"></i> Undelete</a>
+                {% endif %}
+            {% else %}
+                {% if user and message.has_permission(user, "edit") %}
+                    <a href="{{ message.urls.edit }}" class="opt-lightbox"><i class="fa fa-cog"></i> Edit</a>
+                {% endif %}
+                {% if user and message.has_permission(user, "delete") %}
+                    <a href="{{ message.urls.delete }}" class="opt-lightbox"><i class="fa fa-trash"></i> Delete</a>
+                {% endif %}
+                <a href="{{ message.urls.report }}" class="opt-lightbox"><i class="fa fa-flag"></i> Report</a>
+            {% endif %}
+        </aside>
+        <div class="formatted js-body">
+            {{ message.formatted_body|safe }}
+        </div>
+    {% endif %}
+    <a class="expander expanded reply-toggle">
+        {% if message.replies %}
+            All replies
+        {% else %}
+            Reply
+        {% endif %}
+    </a>
+    <div class="replies main">
+        {% for reply in message.replies %}
+            {% include "threads/_reply.html" %}
+        {% else %}
+            <p class="empty">No replies yet.</p>
+        {% endfor %}
+        <form class="reply-form" action="{{ message.urls.reply }}" method="POST">
+            {% csrf_token %}
+            <textarea name="body"></textarea>
+            <a class="formatting" href="#">Formatting Guide</a>
+            <button class="button reply">Post</button>
+        </form>
+    </div>
+    {% if message.replies %}
+        <div class="replies preview">
+            {% with reply=message.replies[-1] %}
+                {% include "threads/_reply.html" %}
+            {% endwith %}
+        </div>
+    {% endif %}
+</div>

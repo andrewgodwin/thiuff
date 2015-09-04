@@ -1,4 +1,5 @@
 from django import forms
+from ..models import Report
 
 
 class CreateThreadForm(forms.Form):
@@ -16,3 +17,12 @@ class CreateThreadForm(forms.Form):
         label = "Text body",
         help_text = "Optional extra text to show on the discussion page - if you're asking a question or starting a discussion, elaborate here.",
     )
+
+
+class ReportForm(forms.Form):
+    """
+    Form for submitting reports against threads or messages.
+    """
+
+    type = forms.ChoiceField(choices=Report.TYPE_CHOICES)
+    comment = forms.CharField(widget=forms.Textarea, required=False)

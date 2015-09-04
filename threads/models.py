@@ -108,6 +108,7 @@ class Thread(models.Model):
         view = "{self.group.urls.view}t/{self.id}/"
         content = "{self.content_url}"
         create_top_level_message = "{view}m/create/"
+        report = "{view}report/"
 
     def get_absolute_url(self):
         return self.urls.view
@@ -160,7 +161,7 @@ class Thread(models.Model):
             num_children=models.Count('children')
         ).filter(
             models.Q(num_children__gt=0) | models.Q(deleted__isnull=True)
-        )
+        ).order_by("created")
 
 
 class ThreadInteraction(models.Model):
@@ -207,6 +208,7 @@ class Message(models.Model):
         reply = "{view}reply/"
         edit = "{view}edit/"
         delete = "{view}delete/"
+        report = "{view}report/"
 
     @property
     def formatted_body(self):
@@ -233,6 +235,9 @@ class Message(models.Model):
         super(Message, self).save(*args, **kwargs)
         self.send_stream()
 
+    def __unicode__(self):
+        return self.body[:50] + ("..." if len(self.body) > 50 else "")
+
     def send_stream(self):
         """
         Sends a notification of us to our thread's stream.
@@ -247,9 +252,20 @@ class Message(models.Model):
             data['html'] = htmlmin.minify(self.reply_html())
         else:
             data['type'] = "discussion"
+            data['html'] = htmlmin.minify(self.discussion_html())
         channels.Group("stream-thread-%s" % self.thread.id).send(
             content=json.dumps(data),
         )
+
+    def discussion_html(self):
+        """
+        Renders the HTML for this as a reply chunk.
+        """
+        template = get_template("threads/_discussion.html")
+        return template.render({
+            "message": self,
+            "thread": self.thread,
+        })
 
     def reply_html(self):
         """
@@ -258,28 +274,46 @@ class Message(models.Model):
         template = get_template("threads/_reply.html")
         return template.render({"reply": self})
 
+    def has_permission(self, user, permission):
+        """
+        Returns if the user has a certain permission.
+        """
+        # Check the permission is valid
+        if permission not in ["edit", "delete", "undelete"]:
+            raise ValueError("Invalid permission %s" % permission)
+        # Admins get all
+        if user.is_superuser:
+            return True
+        # Owners get most
+        if user == self.user and permission != "undelete":
+            return True
+        return False
 
 
-class Reaction(models.Model):
+class Report(models.Model):
     """
-    A response to a message - either something positive, like a thanks or like,
-    or something negative, like a spam or abuse report.
+    A record that a message or thread is against site rules.
     """
 
     TYPE_CHOICES = [
-        ("like", "Like"),
-        ("informative", "Informative"),
-        ("surprising", "Surprising"),
-        ("confusing", "Confusing"),
         ("spam", "Spam"),
         ("abuse", "Abuse"),
+        ("offensive", "Offensive"),
+        ("personal", "Personal Information"),
+        ("hack", "Malware / Hack"),
+        ("illegal", "Illegal content"),
+        ("other", "Other (provide reason)"),
     ]
 
-    message = models.ForeignKey(Message, db_index=True)
+    thread = models.ForeignKey(Thread, null=True, blank=True, related_name="reports")
+    message = models.ForeignKey(Message, null=True, blank=True, related_name="reports")
     type = models.CharField(max_length=30, choices=TYPE_CHOICES)
-    user = models.ForeignKey("users.User", related_name="reactions")
+    comment = models.TextField(null=True, blank=True)
+
+    reporter = models.ForeignKey("users.User", related_name="submitted_reports")
+    accused = models.ForeignKey("users.User", related_name="reports")
 
     class Meta:
         unique_together = [
-            ["message", "user"],
+            ["message", "thread", "reporter"],
         ]

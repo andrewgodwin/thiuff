@@ -93,4 +93,6 @@ $(function () {
         e.preventDefault();
         return false;
     });
+    // Make flashes fade away after a while
+    window.setTimeout(function () { $(".flashes").fadeOut(); }, 7000);
 });

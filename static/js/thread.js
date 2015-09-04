@@ -46,14 +46,34 @@ thiuff.addReplyHtml = function (discussionId, replyHtml) {
     $(".discussion[data-discussion-id='" + discussionId + "']").find(".replies.preview").html(replyHtml);
 }
 
+// Adds a reply to the reply div for the parent message given by
+// the ID. Expects the parent message ID and full HTML for the reply.
+thiuff.addDiscussionHtml = function (discussionId, discussionHtml) {
+    var div = $(".discussion[data-discussion-id='" + discussionId + "']");
+    if (div.length) {
+        // Extract the HTML from the incoming chunk for the message.
+        var content = $(discussionHtml);
+        window.c = content;
+        div.children(".js-body").html(content.children(".js-body").html());
+    } else {
+        $(document.body).append(discussionHtml);
+    }
+}
+
 // Handles "reply" type messages
 thiuff.handleReply = function (data) {
     thiuff.addReplyHtml(data.discussion_id, data.html);
 }
 
+// Handles "reply" type messages
+thiuff.handleDiscussion = function (data) {
+    thiuff.addDiscussionHtml(data.id, data.html);
+}
+
 // Listen on the streamer for new replies
 thiuff.mainStreamer.addStream("thread-" + document.body.dataset.threadId);
 thiuff.mainStreamer.addHandler("reply", thiuff.handleReply);
+thiuff.mainStreamer.addHandler("discussion", thiuff.handleDiscussion);
 
 $(function () {
     // Reply form handler

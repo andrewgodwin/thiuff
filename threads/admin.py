@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Thread, Group, Message
+from .models import Thread, Group, Message, Report
 
 admin.site.register(
     Thread,
@@ -14,4 +14,9 @@ admin.site.register(
 admin.site.register(
     Message,
     list_display=["id", "created"],
+)
+
+admin.site.register(
+    Report,
+    list_display=["id", "thread", "message", "type", "comment"],
 )
