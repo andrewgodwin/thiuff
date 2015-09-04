@@ -72,6 +72,33 @@ thiuff.Streamer.prototype = {
     }
 }
 
+// Runs content binding stuff (called on body on load, and content as it
+// lightboxes in)
+thiuff.bindContent = function (content) {
+    content = $(content);
+    // Hook up any optional-lightbox links
+    content.find(".opt-lightbox").click(function (e) {
+        // If it wasn't left mouse click, don't do anything (middle mouse
+        // should still open in new tab)
+        if (e.button != 0) return true;
+        // Fire up featherlight lightbox
+        $.featherlight(this.href + " .content", {
+            type: 'ajax',
+            afterContent: function () {
+               thiuff.bindContent(this.$content);
+            }
+        });
+        e.preventDefault();
+        return false;
+    });
+    // Lightbox closing buttons
+    content.find(".js-close-lightbox").click(function (e) {
+        $.featherlight.close();
+        e.preventDefault();
+        return false;
+    });
+}
+
 // Make one global instance for streaming stuff
 thiuff.mainStreamer = new thiuff.Streamer(document.body.dataset.streamUrl);
 
@@ -81,18 +108,7 @@ if (document.body.dataset.userId) {
 }
 
 $(function () {
-    // Hook up any optional-lightbox links
-    $(".opt-lightbox").click(function (e) {
-        // If it wasn't left mouse click, don't do anything (middle mouse
-        // should still open in new tab)
-        if (e.button != 0) return true;
-        // Fire up featherlight lightbox
-        $.featherlight(this.href + " .content", {
-            type: 'ajax',
-        });
-        e.preventDefault();
-        return false;
-    });
+    thiuff.bindContent(document.body);
     // Make flashes fade away after a while
     window.setTimeout(function () { $(".flashes").fadeOut(); }, 7000);
 });

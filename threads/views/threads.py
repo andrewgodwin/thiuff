@@ -107,6 +107,11 @@ def edit_message(request, message):
     Deals with creation of new top-level messages
     (called Discussions in site vocabulary)
     """
+
+    # Cancel button support
+    if request.POST.get("cancel"):
+        return redirect(message.thread.urls.view)
+
     if request.method == "POST":
         if request.POST.get("body"):
             message.body = request.POST['body']
