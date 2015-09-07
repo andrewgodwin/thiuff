@@ -5,6 +5,8 @@
 {% block content %}
 
 
+    <h2>Your groups</h2>
+
     <ul class="subnav">
         <li><a href="/g/create/">
             <i class="fa fa-plus"></i>
@@ -12,8 +14,26 @@
         </a></li>
     </ul>
 
-    {% for group in groups %}
-        <a href="{{ group.urls.view }}">{{ group }}</a>
+    <div class="groups">
+    {% for group in your_groups %}
+        <div class="group-card"><a href="{{ group.urls.view }}">
+            <h3>{{ group }}</h3>
+            <p>{{ group.description|default("(no description)", True) }}</p>
+        </a></div>
+    {% else %}
+        <p class="empty">You are not a member of any groups.</p>
     {% endfor %}
+    </div>
+
+    <h2>All groups</h2>
+
+    <div class="groups">
+    {% for group in all_groups %}
+        <div class="group-card"><a href="{{ group.urls.view }}">
+            <h3>{{ group }}</h3>
+            <p>{{ group.description|default("(no description)", True) }}</p>
+        </a></div>
+    {% endfor %}
+    </div>
 
 {% endblock %}

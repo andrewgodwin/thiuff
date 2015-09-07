@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Group{% endblock %}
+
+{% block content %}
+
+	<div class="two-left">
+        <h1>Edit group</h1>
+        {% with submit_verb="Save" %}
+		    {% include "_form.html" %}
+        {% endwith %}
+	</div>
+
+{% endblock %}

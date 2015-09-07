@@ -13,6 +13,7 @@
 <body
 	class="{% block body_class %}{% endblock %}"
 	data-stream-url="{{ settings.WEBSOCKET_URL }}?session_key={{ request.session.session_key }}"
+	{% if group %}data-group-id="{{ group.id }}"{% endif %}
 	{% if user.is_authenticated() %}data-user-id="{{ user.id }}"{% endif %}
 	{% block body_attrs %}{% endblock %}
 >

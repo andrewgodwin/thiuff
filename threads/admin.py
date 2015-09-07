@@ -8,7 +8,7 @@ admin.site.register(
 
 admin.site.register(
     Group,
-    list_display=["id", "name", "created"],
+    list_display=["id", "name", "created", "frontpage"],
 )
 
 admin.site.register(

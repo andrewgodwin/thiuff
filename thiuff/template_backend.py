@@ -7,6 +7,7 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from django.template import TemplateDoesNotExist, TemplateSyntaxError
 from django.template.backends import jinja2 as jinja2backend
 from django.template.backends.utils import csrf_input_lazy, csrf_token_lazy
+from django.template.defaultfilters import pluralize
 from django.utils import six
 from django.utils.module_loading import import_string
 
@@ -19,6 +20,7 @@ def environment(**options):
         'settings': settings,
         'get_flashes': get_flashes,
     })
+    env.filters["pluralize"] = pluralize
     return env
 
 

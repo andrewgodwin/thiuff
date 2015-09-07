@@ -1,6 +1,7 @@
 import json
 from channels import Channel, Group
 from channels.decorators import http_django_auth, send_channel_session
+from .models import Group as GroupModel, Thread
 
 
 @send_channel_session
@@ -30,29 +31,47 @@ def ws_message(channel, send_channel, content, user, session, channel_session, *
     if message_type == "streams":
         # Add them to each stream's group
         for stream in content['streams']:
-            # Threads are public right now, so no need to do checks.
-            if stream.startswith("thread-"):
-                pass
-            # Only allow the same user into a user stream
-            elif stream.startswith("user-"):
-                if stream[5:] != str(user.id):
+            try:
+                allowed, reason = allow_stream(stream, user)
+                # Allowed? Add them to the stream.
+                if allowed:
+                    Group("stream-%s" % stream).add(send_channel)
+                    channel_session['streams'] = channel_session.get("streams", []) + [stream]
+                # Send the error reason back if denied
+                else:
                     Channel(send_channel).send(content=json.dumps({
-                        "error": "not-allowed-stream",
+                        "error": reason,
                         "stream": stream,
                     }))
-                    continue
-            # Deny unknown streams
-            else:
+            except:
+                # Notify client of stream errors then reraise
                 Channel(send_channel).send(content=json.dumps({
-                    "error": "unknown-stream",
+                    "error": "stream-perm-internal-error",
                     "stream": stream,
                 }))
-                continue
-            # Got this far? Add them to the stream.
-            Group("stream-%s" % stream).add(send_channel)
-            channel_session['streams'] = channel_session.get("streams", []) + [stream]
+                raise
     else:
-        Channel(send_channel).send(content="error")
+        Channel(send_channel).send(content=json.dumps({"error": "wrong-type"}))
+
+
+def allow_stream(stream, user):
+    """
+    Logic that determines if user can subscribe to a stream.
+    """
+    # Threads are allowed if they can see the group
+    if stream.startswith("thread-"):
+        thread = Thread.objects.get(id=stream[7:])
+        return thread.group.has_permission(user, "view"), "stream-denied"
+    # Groups are allowed if they can see the group
+    if stream.startswith("group-"):
+        group = GroupModel.objects.get(id=stream[6:])
+        return group.has_permission(user, "view"), "stream-denied"
+    # Only allow the same user into a user stream
+    elif stream.startswith("user-"):
+        return stream[5:] != str(user.id), "stream-denied"
+    # Deny unknown streams
+    else:
+        return False, "stream-unknown"
 
 
 @send_channel_session

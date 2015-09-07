@@ -6,10 +6,12 @@ from django.http import HttpResponse
 from thiuff.shortcuts import JsonResponse, flash
 from ..forms.threads import CreateThreadForm, ReportForm
 from ..models import Thread, Message, Report
-from ..decorators import group_from_name, thread_from_id, message_from_id
+from ..decorators import group_from_name, thread_from_id, message_from_id, object_permission
 
 
+@login_required
 @group_from_name
+@object_permission("group", "create_thread")
 def create(request, group):
     """
     Creates a new Thread.
@@ -34,6 +36,7 @@ def create(request, group):
 
 
 @thread_from_id
+@object_permission("thread", "view")
 def view(request, thread):
     """
     Views a single thread page
@@ -47,6 +50,7 @@ def view(request, thread):
 
 @login_required
 @thread_from_id
+@object_permission("thread", "view")
 def report_thread(request, thread):
     """
     Makes a report for a thread.
@@ -80,6 +84,7 @@ def report_thread(request, thread):
 
 @login_required
 @thread_from_id
+@object_permission("thread", "create_message")
 def create_top_level_message(request, thread):
     """
     Deals with creation of new top-level messages
@@ -102,6 +107,7 @@ def create_top_level_message(request, thread):
 
 @login_required
 @message_from_id
+@object_permission("message", "edit")
 def edit_message(request, message):
     """
     Deals with creation of new top-level messages
@@ -128,6 +134,7 @@ def edit_message(request, message):
 
 @login_required
 @message_from_id
+@object_permission("message", "delete")
 def delete_message(request, message):
     """
     Deletes a message.
@@ -148,21 +155,22 @@ def delete_message(request, message):
 
 @login_required
 @message_from_id
-def create_reply_message(request, parent):
+@object_permission("message", "create_message")
+def create_reply_message(request, message):
     """
     Adds a reply to a thread.
     """
     if request.method == "POST":
         if request.POST.get("body"):
-            message = Message.objects.create(
-                thread=parent.thread,
-                parent=parent,
+            reply = Message.objects.create(
+                thread=message.thread,
+                parent=message,
                 author=request.user,
                 body=request.POST['body']
             )
             if request.is_ajax():
                 return JsonResponse({
-                    "id": str(message.id),
+                    "id": str(reply.id),
                 })
             else:
                 return redirect(message.thread.urls.view)
@@ -172,6 +180,7 @@ def create_reply_message(request, parent):
 
 @login_required
 @message_from_id
+@object_permission("message", "view")
 def report_message(request, message):
     """
     Makes a report for a message.

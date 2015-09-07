@@ -49,6 +49,9 @@ thiuff.Streamer.prototype = {
         this.socket.onmessage = function (msg) {
             console.log("Streamer message:" + msg.data);
             var data = JSON.parse(msg.data);
+            // Error handling
+            if (data.error) throw "Streamer error: " + data.error;
+            // Find a handler by type key
             var handler = self.handlers[data.type];
             if (!handler) throw "No handler for " + data.type;
             handler(data);

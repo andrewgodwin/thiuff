@@ -54,7 +54,9 @@
     {% for message in thread.top_level_messages %}
         {% include "threads/_discussion.html" %}
     {% else %}
-        <p class="empty">No discussions yet.</p>
+        <div class="content short">
+            <p class="empty">No discussions yet.</p>
+        </div>
     {% endfor %}
 
 {% endblock %}

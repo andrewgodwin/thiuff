@@ -1,10 +1,14 @@
-<div class="thread">
+<div class="thread" data-thread-id="{{ thread.id }}">
     <a class="icon" style="background: {{ thread.group.icon_colour }}" href="{{ thread.urls.view }}">
         <i class="fa fa-newspaper-o"></i>
     </a>
     <h3>
         {{ thread.group }}
-        <a class="stats" href="{{ thread.urls.view }}">4 replies / 14 comments</a>
+        <a class="stats" href="{{ thread.urls.view }}">
+            <span class="js-num-top-level-messages">{{ thread.num_top_level_messages }} discussion{{ thread.num_top_level_messages|pluralize }}</span>
+            /
+            <span class="js-num-messages">{{ thread.num_messages }} repl{{ thread.num_messages|pluralize("y,ies") }}</span>
+        </a>
     </h3>
     <h4>
         <a href="{{ thread.urls.content }}">

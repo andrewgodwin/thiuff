@@ -47,12 +47,14 @@
         {% else %}
             <p class="empty">No replies yet.</p>
         {% endfor %}
+        {% if user and message.has_permission(user, "create_message") %}
         <form class="reply-form" action="{{ message.urls.reply }}" method="POST">
             {% csrf_token %}
             <textarea name="body"></textarea>
             <a class="formatting" href="#">Formatting Guide</a>
             <button class="button reply">Post</button>
         </form>
+        {% endif %}
     </div>
     {% if message.replies %}
         <div class="replies preview">

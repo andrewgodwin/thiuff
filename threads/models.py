@@ -18,15 +18,44 @@ class Group(models.Model):
     """
     A grouping of threads, generally under some overarching subject like
     "Django" or "Kittens".
+
+    And yes, colour is spelt the British way. It's my own little troll.
     """
 
+    PERMISSIONS = [
+        "view",
+        "edit",
+        "member",
+        "create_thread",
+        "create_message",
+        "approve_thread",
+        "approve_member",
+        "view_reports",
+    ]
+
     name = models.CharField(max_length=255, unique=True)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    intro = models.TextField(blank=True, null=True)
+
     created = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
     colour = models.CharField(max_length=30, blank=True, null=True)
+    frontpage = models.BooleanField(default=False)
+
+    private = models.BooleanField(default=False)
+    approve_members = models.BooleanField(default=False)
+    approve_threads = models.BooleanField(default=False)
+    approve_messages = models.BooleanField(default=False)
+
+    # Cached numbers of members and threads
+    num_members = models.IntegerField(default=0)
+    num_threads = models.IntegerField(default=0)
 
     class urls(urlman.Urls):
         view = "/g/{self.name}/"
+        edit = "{view}edit/"
+        join = "{view}join/"
+        leave = "{view}leave/"
         create_thread = "{view}t/create/"
 
     def get_absolute_url(self):
@@ -42,6 +71,42 @@ class Group(models.Model):
                 raise ValueError("Colour incorrect")
         return self.colour or "#369"
 
+    def has_permission(self, user, permission):
+        if permission not in self.PERMISSIONS:
+            raise ValueError("Unknown permission %s" % permission)
+        member = self.membership(user)
+        # Banned members get nothing
+        if member and member.status == "banned":
+            return False
+        # Pending members are the same as non members
+        if member and member.status == "pending":
+            member = None
+        # Non-members can only view if not hidden
+        if member is None:
+            return (permission == "view") and (not self.private)
+        # Admins get all
+        if member.status == "admin":
+            return True
+        # Mods get all but edit
+        if member.status == "moderator" and permission != "edit":
+            return True
+        # Members can view and make threads
+        if permission in ["view", "create_thread", "create_message", "member"]:
+            return True
+        return False
+
+    def membership(self, user):
+        return self.members.filter(user=user).first()
+
+    def update_stats(self, commit=True):
+        """
+        Updates denormalised stats
+        """
+        self.num_members = self.members.exclude(status__in=["banned", "pending"]).count()
+        self.num_threads = self.threads.filter(status="approved").count()
+        if commit:
+            self.save()
+
 
 class GroupMember(models.Model):
     """
@@ -50,22 +115,17 @@ class GroupMember(models.Model):
     that users can have on groups (admin, moderator, that kind of stuff).
     """
 
-    PERMISSIONS = [
-        "edit",
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("member", "Member"),
+        ("moderator", "Moderator"),
+        ("admin", "Admin"),
+        ("banned", "Banned"),
     ]
 
     group = models.ForeignKey(Group, related_name="members")
     user = models.ForeignKey("users.User", related_name="memberships")
-
-    admin = models.BooleanField(default=False)
-    moderator = models.BooleanField(default=False)
-
-    def has_permission(self, permission):
-        if permission not in self.PERMISSIONS:
-            raise ValueError("Unknown permission %s" % permission)
-        if self.admin:
-            return True
-        return False
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, db_index=True)
 
 
 class Thread(models.Model):
@@ -82,6 +142,14 @@ class Thread(models.Model):
     Whether this is a good idea remains to be seen.
     """
 
+    PERMISSIONS = [
+        "view",
+        "edit",
+        "delete",
+        "undelete",
+        "create_message",
+    ]
+
     STATUS_CHOICES = [
         ("pending", "Pending"),
         ("approved", "Approved"),
@@ -97,6 +165,10 @@ class Thread(models.Model):
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, db_index=True)
 
     score = models.FloatField(default=0, db_index=True)
+
+    # Cached numbers of replies and discussions
+    num_top_level_messages = models.IntegerField(default=0)
+    num_messages = models.IntegerField(default=0)
 
     # A thread has at least a title, and might also have a link, text or
     # some other thing.
@@ -115,6 +187,21 @@ class Thread(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    def has_permission(self, user, permission):
+        """
+        Permission checking.
+        """
+        if permission not in self.PERMISSIONS:
+            raise ValueError("Unknown permission %s" % permission)
+        # Author can do everything
+        if user == self.author:
+            return True
+        # Delegate rest to group for now
+        if permission in ["view", "create_message"]:
+            return self.group.has_permission(user, permission)
+        else:
+            return False
 
     @property
     def content_url(self):
@@ -163,6 +250,39 @@ class Thread(models.Model):
             models.Q(num_children__gt=0) | models.Q(deleted__isnull=True)
         ).order_by("created")
 
+    def update_stats(self, commit=True):
+        """
+        Updates denormalised stats
+        """
+        self.num_messages = self.messages.filter(deleted__isnull=True).count()
+        self.num_top_level_messages = self.top_level_messages.count()
+        if commit:
+            self.save(update_stats=False)
+            self.send_stream_group()
+
+    def save(self, update_stats=True, *args, **kwargs):
+        """
+        Notifies channels and updates stats on save.
+        """
+        super(Thread, self).save(*args, **kwargs)
+        # Update parent group stats
+        if update_stats:
+            self.group.update_stats()
+
+    def send_stream_group(self):
+        """
+        Sends a notification of us to our groups's stream.
+        """
+        data = {
+            "id": str(self.id),
+            "type": "thread",
+            "num_messages": self.num_messages,
+            "num_top_level_messages": self.num_top_level_messages,
+        }
+        channels.Group("stream-group-%s" % self.group.id).send(
+            content=json.dumps(data),
+        )
+
 
 class ThreadInteraction(models.Model):
     """
@@ -188,6 +308,14 @@ class Message(models.Model):
     we disallow more nesting in the code, but the schema would technically
     allow full nesting.
     """
+
+    PERMISSIONS = [
+        "view",
+        "edit",
+        "delete",
+        "undelete",
+        "create_message",
+    ]
 
     thread = models.ForeignKey(Thread, related_name="messages", db_index=True)
     parent = models.ForeignKey("self", related_name="children", null=True, blank=True)
@@ -228,17 +356,21 @@ class Message(models.Model):
         """
         return list(self.children.order_by("created"))
 
-    def save(self, *args, **kwargs):
+    def save(self, update_stats=True, *args, **kwargs):
         """
         Notifies channels on save.
         """
         super(Message, self).save(*args, **kwargs)
-        self.send_stream()
+        # Update parent thread stats
+        if update_stats:
+            self.thread.update_stats()
+        # Always send notification to thread
+        self.send_stream_thread()
 
     def __unicode__(self):
         return self.body[:50] + ("..." if len(self.body) > 50 else "")
 
-    def send_stream(self):
+    def send_stream_thread(self):
         """
         Sends a notification of us to our thread's stream.
         """
@@ -279,7 +411,7 @@ class Message(models.Model):
         Returns if the user has a certain permission.
         """
         # Check the permission is valid
-        if permission not in ["edit", "delete", "undelete"]:
+        if permission not in self.PERMISSIONS:
             raise ValueError("Invalid permission %s" % permission)
         # Admins get all
         if user.is_superuser:
@@ -287,6 +419,9 @@ class Message(models.Model):
         # Owners get most
         if user == self.user and permission != "undelete":
             return True
+        # View is handled by thread
+        if permission in ["view", "create_message"]:
+            return self.thread.has_permission(user, permission)
         return False
 
 

@@ -218,10 +218,25 @@ h1 {
         margin: -20px -20px 15px -20px;
     }
 
+h2 {
+    font-size: 16px;
+    font-weight: normal;
+    color: #666;
+    text-transform: uppercase;
+    margin: 30px 0 15px 0;
+    clear: left;
+}
+    h2:nth-child(1) {
+        margin-top: 0;
+    }
+
 p {
     line-height: 160%;
     margin-bottom: 1em;
 }
+    p:last-child {
+        margin-bottom: 0;
+    }
     p.empty {
         font-style: italic;
         color: #777;
@@ -232,6 +247,10 @@ hr {
     height: 1px;
     background: #ccc;
     margin: 15px 0;
+}
+
+.clear {
+    clear: both;
 }
 
 .two-left {
@@ -336,6 +355,32 @@ hr {
         color: #333;
     }
 
+/* Group indexes */
+
+.groups {
+    overflow: hidden;
+    margin-bottom: -10px;
+}
+.group-card {
+    margin: 0 30px 15px 0;
+    float: left;
+    width: 200px;
+}
+    .group-card a:hover {
+        text-decoration: none;
+    }
+    .group-card h3 {
+        font-size: 25px;
+    }
+    .group-card a:hover h3 {
+        color: #444;
+    }
+    .group-card p {
+        font-size: 15px;
+        color: #444;
+        margin: 2px 0 0 0;
+    }
+
 /* Thread view */
 
 .content .solo-icon {
@@ -357,6 +402,8 @@ hr {
     line-height: 45px;
     color: #333;
     font-size: 30px;
+    clear: none;
+    text-transform: none;
 }
     .thread-view h2 a:hover {
         text-decoration: none;
