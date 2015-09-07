@@ -28,6 +28,7 @@ thiuff.toggleReplies = function (event) {
     var expander = $(this);
     var replies = expander.parent().children(".replies.main");
     var preview = expander.parent().children(".replies.preview");
+    var form = expander.parent().find(".reply-form");
     if (replies.filter(":visible").length) {
         replies.hide();
         preview.show();
@@ -36,6 +37,7 @@ thiuff.toggleReplies = function (event) {
         preview.hide();
         replies.show();
         expander.addClass("expanded");
+        $(document.body).scrollTop(form.offset().top - window.innerHeight + form.height());
     }
 }
 
@@ -75,18 +77,18 @@ thiuff.mainStreamer.addStream("thread-" + document.body.dataset.threadId);
 thiuff.mainStreamer.addHandler("reply", thiuff.handleReply);
 thiuff.mainStreamer.addHandler("discussion", thiuff.handleDiscussion);
 
-$(function () {
+thiuff.contentBinders.push(function (content) {
     // Reply form handler
-    $(".reply-form button").click(thiuff.postReply);
-    $('.reply-form textarea').keydown(function (event) {
+    content.find(".reply-form button").click(thiuff.postReply);
+    content.find('.reply-form textarea').keydown(function (event) {
         if ((event.keyCode == 10 || event.keyCode == 13) && event.ctrlKey) {
-            thiuff.postReply(event);
+            thiuff.postReply.bind(this)(event);
         }
     });
     // Reply expand/contracter
-    $(".discussion .expander").click(thiuff.toggleReplies);
+    content.find(".discussion .expander").click(thiuff.toggleReplies);
     // Contract all replies on page load
-    $(".discussion .expander").removeClass("expanded");
-    $(".discussion .replies.main").hide();
-    $(".discussion .replies.preview").show();
+    content.find(".discussion .expander").removeClass("expanded");
+    content.find(".discussion .replies.main").hide();
+    content.find(".discussion .replies.preview").show();
 });

@@ -100,7 +100,14 @@ thiuff.bindContent = function (content) {
         e.preventDefault();
         return false;
     });
+    // Other binders
+    for (var i = 0; i < thiuff.contentBinders.length; i++) {
+        thiuff.contentBinders[i](content);
+    }
 }
+
+// Additional content binder storage
+thiuff.contentBinders = [];
 
 // Make one global instance for streaming stuff
 thiuff.mainStreamer = new thiuff.Streamer(document.body.dataset.streamUrl);

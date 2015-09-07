@@ -63,12 +63,12 @@ def allow_stream(stream, user):
         thread = Thread.objects.get(id=stream[7:])
         return thread.group.has_permission(user, "view"), "stream-denied"
     # Groups are allowed if they can see the group
-    if stream.startswith("group-"):
+    elif stream.startswith("group-"):
         group = GroupModel.objects.get(id=stream[6:])
         return group.has_permission(user, "view"), "stream-denied"
     # Only allow the same user into a user stream
     elif stream.startswith("user-"):
-        return stream[5:] != str(user.id), "stream-denied"
+        return stream[5:] == str(user.id), "stream-denied"
     # Deny unknown streams
     else:
         return False, "stream-unknown"
