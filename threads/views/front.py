@@ -6,7 +6,6 @@ def index(request):
     """
     Main index page
     """
-
     groups = Group.objects.order_by("name")[:12]
     threads = Thread.objects.order_by("-score", "-created")[:50]
 

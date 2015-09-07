@@ -39,3 +39,29 @@ class LoginForm(forms.Form):
         if self.cleaned_data["user"] is None:
             raise forms.ValidationError("Incorrect password.")
         return None
+
+
+class ChangePasswordForm(forms.Form):
+    """
+    Password change form
+    """
+
+    old_password = forms.CharField(widget=forms.PasswordInput)
+    new_password = forms.CharField(widget=forms.PasswordInput)
+    new_password_again = forms.CharField(widget=forms.PasswordInput)
+
+    def __init__(self, user, *args, **kwargs):
+        super(ChangePasswordForm, self).__init__(*args, **kwargs)
+        self.user = user
+
+    def clean_old_password(self):
+        op = self.cleaned_data['old_password']
+        if not self.user.check_password(op):
+            raise forms.ValidationError("Old password is incorrect.")
+
+    def clean_new_password_again(self):
+        npa = self.cleaned_data['new_password_again']
+        np = self.cleaned_data.get("new_password", None)
+        if np and npa != np:
+            raise forms.ValidationError("New passwords did not match.")
+        return npa

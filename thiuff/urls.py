@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^$', front.index),
     url(r'^auth/login/$', auth.login),
     url(r'^auth/logout/$', auth.logout),
+    url(r'^settings/$', users.settings),
     url(r'^u/([^/]+)/$', users.view),
     url(r'^g/$', groups.index),
     url(r'^g/create/$', groups.create),

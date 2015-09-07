@@ -161,3 +161,14 @@ class UserAuth(models.Model):
             return identifier.lower()
         else:
             return identifier
+
+    def __unicode__(self):
+        return "%s: %s" % (self.type, self.human_name)
+
+    @property
+    def human_name(self):
+        """
+        Returns a human-understandable name for the identifier
+        (e.g. the facebook profile name rather than the user ID)
+        """
+        return self.identifier

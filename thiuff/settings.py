@@ -91,6 +91,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'thiuff.wsgi.application'
 
+LOGIN_URL = "/auth/login/"
+LOGOUT_URL = "/auth/logout/"
+
 
 # Database
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
