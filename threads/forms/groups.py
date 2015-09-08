@@ -6,7 +6,7 @@ from ..models import Group
 
 class CreateGroupForm(forms.Form):
 
-    name = forms.CharField(help_text="Name of the group. No spaces, must be unique")
+    name = forms.CharField(help_text="Name of the group. No spaces, must be unique, case doesn't matter.")
     description = forms.CharField(required=False, help_text="Short description of this group.")
 
     def clean_name(self):

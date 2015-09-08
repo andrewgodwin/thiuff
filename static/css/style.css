@@ -393,7 +393,7 @@ hr {
 .group-card {
     margin: 0 30px 15px 0;
     float: left;
-    width: 200px;
+    width: 300px;
 }
     .group-card a:hover {
         text-decoration: none;
@@ -407,7 +407,8 @@ hr {
     .group-card p {
         font-size: 15px;
         color: #444;
-        margin: 2px 0 0 0;
+        margin: 5px 0 0 0;
+        line-height: 120%;
     }
 
 /* Thread view */

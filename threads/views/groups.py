@@ -45,6 +45,11 @@ def create(request):
                 name=form.cleaned_data['name'],
                 description=form.cleaned_data['description'],
             )
+            GroupMember.objects.create(
+                user=request.user,
+                group=group,
+                status="admin",
+            )
             return redirect(group.urls.view)
     else:
         form = CreateGroupForm()
