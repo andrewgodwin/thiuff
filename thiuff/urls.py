@@ -4,6 +4,7 @@ from django.contrib import admin
 from thiuff.shortcuts import flat_template
 from threads.views import front, groups, threads
 from users.views import auth, users
+from chat import views as chat
 
 urlpatterns = [
     url(r'^$', front.index),
@@ -15,6 +16,8 @@ urlpatterns = [
     url(r'^auth/logout/$', auth.logout),
     url(r'^auth/signup/$', auth.signup),
     url(r'^settings/$', users.settings),
+    url(r'^chat/$', chat.index),
+    url(r'^chat/post/$', chat.post),
     url(r'^u/([^/]+)/$', users.view),
     url(r'^g/$', groups.index),
     url(r'^g/create/$', groups.create),

@@ -58,8 +58,11 @@ def allow_stream(stream, user):
     """
     Logic that determines if user can subscribe to a stream.
     """
+    # Chat is everyone
+    if stream == "chat":
+        return True, None
     # Threads are allowed if they can see the group
-    if stream.startswith("thread-"):
+    elif stream.startswith("thread-"):
         thread = Thread.objects.get(id=stream[7:])
         return thread.group.has_permission(user, "view"), "stream-denied"
     # Groups are allowed if they can see the group

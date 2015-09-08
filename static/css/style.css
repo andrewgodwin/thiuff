@@ -603,6 +603,55 @@ hr {
         text-decoration: none;
     }
 
+/* Chat */
+
+.chat {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    height: 500px;
+    overflow: auto;
+}
+    .chat p {
+        margin: 0;
+    }
+    .chat-form {
+        overflow: hidden;
+        position: relative;
+        clear: left;
+        margin: 10px 0 0 0;
+    }
+    .chat-form label {
+        display: block;
+        margin: 0 0 10px 0;
+    }
+    .chat-form input[name=author] {
+        font-family: inherit;
+        border: 1px solid #ccc;
+        padding: 8px;
+    }
+    .chat-form textarea {
+        width: 85%;
+        height: 45px;
+        font-family: inherit;
+        border: 1px solid #ccc;
+        padding: 8px;
+    }
+    .chat-form textarea:focus {
+        outline: 0;
+        border-color: #222;
+    }
+    .chat-form .formatting {
+        float: left;
+        color: #777;
+        margin: 0 0 0 5px;
+        padding: 9px 8px;
+        font-size: 12px;
+    }
+    .chat-form button.reply {
+        margin: 0 0 0 13px;
+        padding: 4px 8px;
+    }
+
 /* Buttons */
 
 .button {

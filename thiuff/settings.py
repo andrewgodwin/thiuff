@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'threads',
     'users',
     'images',
+    'chat',
 ]
 
 AUTH_USER_MODEL = "users.User"

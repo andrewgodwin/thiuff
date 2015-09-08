@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Chat test{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript">
+        // Handles "chat" type messages
+        thiuff.handleChat = function (data) {
+            $(".chat .empty").remove();
+            $(".chat").append("<p class='message'><b>" + data.author + "</b>: " + data.message + "</p>");
+        }
+
+        // Sends a chat message
+        thiuff.postChat = function (event) {
+            var form = $(this).parent("form");
+            // Get content
+            var data = {
+                message: form.find("textarea").val(),
+                author: form.find("[name=author]").val(),
+                csrfmiddlewaretoken: form.find("input[name=csrfmiddlewaretoken]").val()
+            }
+            // Post to backend handler
+            $.ajax(form.attr("action"), {
+                data: data,
+                method: "POST"
+            }).done(function (data) {
+                form.find("textarea").val("");
+            }).fail(function () {
+                alert("Failed to post message.");
+            });
+            // Don't do anything
+            event.preventDefault();
+            return false;
+        }
+
+        // Listen on the streamer for new replies
+        thiuff.mainStreamer.addStream("chat");
+        thiuff.mainStreamer.addHandler("chat", thiuff.handleChat);
+
+        // Handle form click
+        $(".chat-form button").click(thiuff.postChat);
+        $('.chat-form textarea').keydown(function (event) {
+            if ((event.keyCode == 10 || event.keyCode == 13) && event.ctrlKey) {
+                thiuff.postChat.bind(this)(event);
+            }
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="chat">
+        <p class="empty">Waiting for new messages...</p>
+    </div>
+
+    <form action="/chat/post/" class="chat-form">
+        {% csrf_token %}
+        <label>Name: <input name="author" value="anonymous"></label>
+        <textarea name="message" placeholder="Type message and hit Ctrl-Enter to send."></textarea>
+    </form>
+
+{% endblock %}
