@@ -185,4 +185,7 @@ DISALLOWED_NAMES = [
     "auth",
     "admins",
     "admin",
+    "announcements",
+    "announcement",
+    "announce",
 ]

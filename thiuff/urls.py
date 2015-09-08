@@ -1,12 +1,16 @@
 from django.conf.urls import url
 from django.contrib import admin
 
+from thiuff.shortcuts import flat_template
 from threads.views import front, groups, threads
-from threads import consumers
 from users.views import auth, users
 
 urlpatterns = [
     url(r'^$', front.index),
+    url(r'^about/$', flat_template("flat/about.html")),
+    url(r'^contact/$', flat_template("flat/contact.html")),
+    url(r'^coc/$', flat_template("flat/coc.html")),
+    url(r'^privacy/$', flat_template("flat/privacy.html")),
     url(r'^auth/login/$', auth.login),
     url(r'^auth/logout/$', auth.logout),
     url(r'^auth/signup/$', auth.signup),

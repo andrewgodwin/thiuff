@@ -1,5 +1,5 @@
 import json
-
+from django.shortcuts import render
 from django.http import HttpResponse
 
 
@@ -30,3 +30,12 @@ def get_flashes(request):
     if messages:
         del request.session["messages"]
     return messages
+
+
+def flat_template(template_name):
+    """
+    A view that renders a flat template.
+    """
+    def view(request):
+        return render(request, template_name)
+    return view

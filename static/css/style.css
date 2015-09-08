@@ -103,6 +103,26 @@ body {
         font-size: 40px;
     }
 
+/* Footer */
+
+footer {
+    width: 1150px;
+    margin: 30px auto 30px auto;
+    position: relative;
+    overflow: hidden;
+    color: #aaa;
+    font-size: 90%;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+}
+    footer aside {
+        float: left;
+        width: 200px;
+    }
+        footer aside a {
+            display: block;
+            margin: 0 0 8px 0;
+        }
+
 /* Content wrapper */
 
 .content {
@@ -267,6 +287,12 @@ hr {
 }
 
 .formatted p {
+    line-height: 140%;
+    margin-bottom: 0.5em;
+}
+.formatted li {
+    margin-left: 20px;
+    list-style-type: disc;
     line-height: 140%;
     margin-bottom: 0.5em;
 }
@@ -736,7 +762,7 @@ table.nice {
     .content {
         width: 710px;
     }
-    .midnav {
+    .midnav, footer {
         width: 750px;
     }
 
@@ -751,10 +777,7 @@ table.nice {
 
 @media (max-width: 767px) {
 
-    .content {
-        width: 100%;
-    }
-    .midnav {
+    .content, .midnav, footer {
         width: 100%;
     }
 
