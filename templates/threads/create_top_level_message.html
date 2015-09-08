@@ -13,7 +13,15 @@
         {% csrf_token %}
         <div class="field">
             <textarea name="body" placeholder="Your message here."></textarea>
-            <p class="help-text">Format using <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>. Discussions in this group are <b>pre-moderated</b>.</p>
+            <p class="help-text">
+                Format using <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>.
+                Discussions in this group
+                {% if group.approve_messages %}
+                    are <b>pre-moderated</b>.
+                {% else %}
+                    will <b>post instantly</b>.
+                {% endif %}
+            </p>
         </div>
         <input type="submit" value="Post" class="button">
     </form>
