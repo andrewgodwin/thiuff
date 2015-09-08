@@ -44,6 +44,7 @@ thiuff.toggleReplies = function (event) {
 // Adds a reply to the reply div for the parent message given by
 // the ID. Expects the parent message ID and full HTML for the reply.
 thiuff.addReplyHtml = function (discussionId, replyHtml) {
+    $(".discussion[data-discussion-id='" + discussionId + "']").find("p.empty").remove();
     $(".discussion[data-discussion-id='" + discussionId + "']").find(".reply-form").before(replyHtml);
     $(".discussion[data-discussion-id='" + discussionId + "']").find(".replies.preview").html(replyHtml);
 }
