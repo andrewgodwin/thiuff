@@ -1,4 +1,4 @@
-{% if request.is_ajax() %}
+{% if request and request.is_ajax() %}
     {% extends "base_lightbox.html" %}
 {% else %}
     {% extends "base.html" %}
