@@ -98,6 +98,8 @@ class Group(models.Model):
         return False
 
     def membership(self, user):
+        if user is None or user.is_anonymous():
+            return None
         return self.members.filter(user=user).first()
 
     def update_stats(self, commit=True):
