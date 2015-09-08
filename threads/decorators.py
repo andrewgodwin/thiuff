@@ -64,7 +64,6 @@ def object_permission(argname, permission):
                 obj = kwargs[argname]
             except KeyError:
                 raise ValueError("No arg named %s to check perms on" % argname)
-            print obj.__class__, obj.pk, request.user, permission, obj.has_permission(request.user, permission)
             if not obj.has_permission(request.user, permission):
                 return HttpResponse(render(request, "403.html"), status=403)
             return func(request, *args, **kwargs)

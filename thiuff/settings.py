@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'channels',
     'threads',
     'users',
+    'images',
 ]
 
 AUTH_USER_MODEL = "users.User"

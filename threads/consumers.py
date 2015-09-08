@@ -1,57 +1,57 @@
 import json
 from channels import Channel, Group
-from channels.decorators import http_django_auth, send_channel_session
+from channels.decorators import http_django_auth, channel_session
 from .models import Group as GroupModel, Thread
 
 
-@send_channel_session
-def ws_connect(channel, send_channel, channel_session, **kwargs):
+@channel_session
+def ws_connect(message):
     """
     Keeps websockets subscribed to channel Groups.
     """
     # Subscribe to the global site channel
-    Group("global").add(send_channel)
+    Group("global").add(message.reply_channel)
     # Keep streams subscribed
-    for stream in channel_session.get("streams", []):
-        Group("stream-%s" % stream).add(send_channel)
+    for stream in message.channel_session.get("streams", []):
+        Group("stream-%s" % stream).add(message.reply_channel)
 
 
 @http_django_auth
-@send_channel_session
-def ws_message(channel, send_channel, content, user, channel_session, **kwargs):
+@channel_session
+def ws_message(message):
     # Parse incoming JSON message
     try:
-        content = json.loads(content)
+        content = json.loads(message.content['content'])
         message_type = content['type']
     except ValueError:
-        Channel(send_channel).send(content=json.dumps({"error": "not-json"}))
+        message.reply_channel.send(content=json.dumps({"error": "not-json"}))
     except KeyError:
-        Channel(send_channel).send(content=json.dumps({"error": "no-type"}))
+        message.reply_channel.send(content=json.dumps({"error": "no-type"}))
     # Handle different types
     if message_type == "streams":
         # Add them to each stream's group
         for stream in content['streams']:
             try:
-                allowed, reason = allow_stream(stream, user)
+                allowed, reason = allow_stream(stream, message.user)
                 # Allowed? Add them to the stream.
                 if allowed:
-                    Group("stream-%s" % stream).add(send_channel)
-                    channel_session['streams'] = channel_session.get("streams", []) + [stream]
+                    Group("stream-%s" % stream).add(message.reply_channel)
+                    message.channel_session['streams'] = message.channel_session.get("streams", []) + [stream]
                 # Send the error reason back if denied
                 else:
-                    Channel(send_channel).send(content=json.dumps({
+                    message.reply_channel.send(content=json.dumps({
                         "error": reason,
                         "stream": stream,
                     }))
             except:
                 # Notify client of stream errors then reraise
-                Channel(send_channel).send(content=json.dumps({
+                message.reply_channel.send(content=json.dumps({
                     "error": "stream-perm-internal-error",
                     "stream": stream,
                 }))
                 raise
     else:
-        Channel(send_channel).send(content=json.dumps({"error": "wrong-type"}))
+        message.reply_channel.send(content=json.dumps({"error": "wrong-type"}))
 
 
 def allow_stream(stream, user):
@@ -74,11 +74,11 @@ def allow_stream(stream, user):
         return False, "stream-unknown"
 
 
-@send_channel_session
-def ws_disconnect(channel, send_channel, channel_session, **kwargs):
+@channel_session
+def ws_disconnect(message):
     """
     Removes websockets from subscribed channels as they disconnect.
     """
-    Group("global").discard(send_channel)
-    for stream in getattr(channel_session, "streams", []):
-        Group("stream-%s" % stream).discard(send_channel)
+    Group("global").discard(message.reply_channel)
+    for stream in message.channel_session.get("streams", []):
+        Group("stream-%s" % stream).discard(message.reply_channel)

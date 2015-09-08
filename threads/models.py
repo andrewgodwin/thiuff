@@ -41,6 +41,8 @@ class Group(models.Model):
     active = models.BooleanField(default=True)
     colour = models.CharField(max_length=30, blank=True, null=True)
     frontpage = models.BooleanField(default=False)
+    background = models.ForeignKey("images.Image", blank=True, null=True, related_name="+")
+    logo = models.ForeignKey("images.Image", blank=True, null=True, related_name="+")
 
     private = models.BooleanField(default=False)
     approve_members = models.BooleanField(default=False)
@@ -279,9 +281,9 @@ class Thread(models.Model):
             "num_messages": self.num_messages,
             "num_top_level_messages": self.num_top_level_messages,
         }
-        channels.Group("stream-group-%s" % self.group.id).send(
-            content=json.dumps(data),
-        )
+        channels.Group("stream-group-%s" % self.group.id).send({
+            "content": json.dumps(data),
+        })
 
 
 class ThreadInteraction(models.Model):
@@ -385,9 +387,9 @@ class Message(models.Model):
         else:
             data['type'] = "discussion"
             data['html'] = htmlmin.minify(self.discussion_html())
-        channels.Group("stream-thread-%s" % self.thread.id).send(
-            content=json.dumps(data),
-        )
+        channels.Group("stream-thread-%s" % self.thread.id).send({
+            "content": json.dumps(data),
+        })
 
     def discussion_html(self):
         """
