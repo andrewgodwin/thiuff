@@ -3,7 +3,7 @@
         <i class="fa fa-newspaper-o"></i>
     </a>
     <h3>
-        {{ thread.group }}
+        <a href="{{ thread.urls.view }}">{{ thread.group }}</a>
         <a class="stats" href="{{ thread.urls.view }}">
             <span class="js-num-top-level-messages">{{ thread.num_top_level_messages }} discussion{{ thread.num_top_level_messages|pluralize }}</span>
             /
