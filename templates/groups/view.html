@@ -27,12 +27,12 @@
         </a>
         {% endif %}
         {% if group.has_permission(user, "edit") %}
-        <a href="{{ group.urls.view }}">
+        <a href="{{ group.urls.edit }}">
             <i class="fa fa-cog"></i>
             Settings
         </a>
         {% endif %}
-        {% if group.has_permission(user, "approve_thread") or group.has_permission(user, "approve_member") or group.has_permission(user, "view_reports") %}
+        {% if False and group.has_permission(user, "approve_thread") or group.has_permission(user, "approve_member") or group.has_permission(user, "view_reports") %}
         <a href="#">
             <i class="fa fa-legal"></i>
             Moderation

@@ -84,12 +84,19 @@ def report_thread(request, thread):
 
 @login_required
 @thread_from_id
-@object_permission("thread", "create_message")
 def create_top_level_message(request, thread):
     """
     Deals with creation of new top-level messages
     (called Discussions in site vocabulary)
     """
+
+    if not thread.has_permission(request.user, "create_message"):
+        return render(request, "threads/need_to_join.html", {
+            "thread": thread,
+            "group": thread.group,
+        })
+
+
     if request.method == "POST":
         if request.POST.get("body"):
             message = Message.objects.create(

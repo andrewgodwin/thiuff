@@ -1,0 +1,14 @@
+{% extends "lightbox.html" %}
+
+{% block title %}Need to join{% endblock %}
+
+{% block content %}
+
+    <h1>Need to join</h1>
+
+    <p>
+        You can't post in a group without being a member of that group -<br> just
+        <a href="{{ group.urls.join }}">join the group</a> to continue!
+    </p>
+
+{% endblock %}

@@ -4,15 +4,14 @@
 
 {% block content %}
 
-
-    <h2>Your groups</h2>
-
     <ul class="subnav">
         <li><a href="/g/create/">
             <i class="fa fa-plus"></i>
             Create group
         </a></li>
     </ul>
+
+    <h2 class="first">Your groups</h2>
 
     <div class="groups">
     {% for group in your_groups %}

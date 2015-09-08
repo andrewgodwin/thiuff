@@ -50,10 +50,12 @@
         {% if user and message.has_permission(user, "create_message") %}
         <form class="reply-form" action="{{ message.urls.reply }}" method="POST">
             {% csrf_token %}
-            <textarea name="body"></textarea>
+            <textarea name="body" placeholder="Compose your reply and either press Post or Ctrl-Enter."></textarea>
             <a class="formatting" href="#">Formatting Guide</a>
             <button class="button reply">Post</button>
         </form>
+        {% elif user %}
+            <p class="empty">Become a <a href="{{ group.urls.join }}">group member</a> to reply.</p>
         {% endif %}
     </div>
     {% if message.replies %}

@@ -417,7 +417,7 @@ class Message(models.Model):
         if user.is_superuser:
             return True
         # Owners get most
-        if user == self.user and permission != "undelete":
+        if user == self.author and permission != "undelete":
             return True
         # View is handled by thread
         if permission in ["view", "create_message"]:

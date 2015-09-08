@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from thiuff.shortcuts import flash
 
 from ..forms.groups import CreateGroupForm, EditGroupForm
 from ..models import Group, GroupMember
@@ -64,9 +65,14 @@ def edit(request, group):
         if form.is_valid():
             group.description = form.cleaned_data['description']
             group.colour = form.cleaned_data['colour']
-            return redirect(group.urls.view)
+            group.save()
+            flash(request, "Settings saved.")
+            return redirect(group.urls.edit)
     else:
-        form = EditGroupForm()
+        form = EditGroupForm(initial={
+            "description": group.description,
+            "colour": group.colour,
+        })
     return render(request, "groups/edit.html", {
         "group": group,
         "form": form,
@@ -88,6 +94,7 @@ def join(request, group):
             user=request.user,
             status="member",
         )
+        flash(request, "You are now a member of the group!")
 
     return redirect(group.urls.view)
 
@@ -113,5 +120,6 @@ def leave(request, group):
             })
 
     membership.delete()
+    flash(request, "You are no longer a member of the group.")
 
     return redirect(group.urls.view)

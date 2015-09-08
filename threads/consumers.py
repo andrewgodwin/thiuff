@@ -18,7 +18,7 @@ def ws_connect(channel, send_channel, channel_session, **kwargs):
 
 @http_django_auth
 @send_channel_session
-def ws_message(channel, send_channel, content, user, session, channel_session, **kwargs):
+def ws_message(channel, send_channel, content, user, channel_session, **kwargs):
     # Parse incoming JSON message
     try:
         content = json.loads(content)

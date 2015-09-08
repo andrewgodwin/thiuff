@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Thread, Group, Message, Report
+from .models import Thread, Group, Message, Report, GroupMember
 
 admin.site.register(
     Thread,
@@ -9,6 +9,11 @@ admin.site.register(
 admin.site.register(
     Group,
     list_display=["id", "name", "created", "frontpage"],
+)
+
+admin.site.register(
+    GroupMember,
+    list_display=["id", "user", "group", "status"],
 )
 
 admin.site.register(

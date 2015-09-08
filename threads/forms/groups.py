@@ -12,7 +12,7 @@ class CreateGroupForm(forms.Form):
     def clean_name(self):
         name = self.cleaned_data['name'].lower()
         # Check characters
-        if not re.match(r"[a-z0-9\-\_]+", name):
+        if not re.match(r"^[a-z0-9\-\_]+$", name):
             raise forms.ValidationError("Invalid characters in name; use only a-z, digits, underscores and hyphens.")
         # Check for disallowed name
         if name in settings.DISALLOWED_NAMES:
@@ -31,6 +31,6 @@ class EditGroupForm(forms.Form):
     def clean_colour(self):
         colour = self.cleaned_data['colour'].lower()
         # Check characters
-        if not re.match(r"[a-z0-9\#\-]+", colour):
+        if not re.match(r"^[a-z0-9\#\-]+$", colour):
             raise forms.ValidationError("Invalid characters in CSS colour.")
         return colour

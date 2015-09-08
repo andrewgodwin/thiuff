@@ -37,7 +37,7 @@ thiuff.toggleReplies = function (event) {
         preview.hide();
         replies.show();
         expander.addClass("expanded");
-        $(document.body).scrollTop(form.offset().top - window.innerHeight + form.height());
+        //$(document.body).scrollTop(form.offset().top - window.innerHeight + form.height());
     }
 }
 

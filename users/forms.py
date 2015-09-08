@@ -1,3 +1,4 @@
+import re
 from django import forms
 from django.contrib.auth import authenticate
 from .models import User
@@ -39,6 +40,34 @@ class LoginForm(forms.Form):
         if self.cleaned_data["user"] is None:
             raise forms.ValidationError("Incorrect password.")
         return None
+
+
+class SignupForm(forms.Form):
+    """
+    New user form
+    """
+
+    username = forms.CharField(max_length=40)
+    password = forms.CharField(widget=forms.PasswordInput)
+    email = forms.EmailField()
+
+    def clean_username(self):
+        username = self.cleaned_data['username'].lower()
+        # Check existence
+        user = User.by_username(username)
+        if user:
+            raise forms.ValidationError("That username is already taken.")
+        # Check characters
+        if not re.match(r"^[a-z0-9\-\_]+$", username):
+            raise forms.ValidationError("Invalid characters; use only a-z, digits, underscores and hyphens.")
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data['email'].lower()
+        user = User.by_identifier("email", email)
+        if user:
+            raise forms.ValidationError("There is already an account with that email address.")
+        return email
 
 
 class ChangePasswordForm(forms.Form):

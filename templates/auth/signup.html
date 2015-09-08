@@ -1,0 +1,15 @@
+{% extends "lightbox.html" %}
+
+{% block title %}Sign up{% endblock %}
+
+{% block content %}
+
+	<div class="two-left">
+		<h1>Sign up</h1>
+		<p>Sign up for an account to be able to join groups,<br> post threads, and participate in discussions.</p>
+        {% with submit_verb="Sign up", action="/auth/signup/" %}
+		    {% include "_form.html" %}
+        {% endwith %}
+	</div>
+
+{% endblock %}
