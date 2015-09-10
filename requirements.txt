@@ -1,6 +1,6 @@
 Django>=1.8,<1.9
 django-pgjson==0.3.1
-urlman==1.0
+urlman==1.0.1
 Jinja2==2.8
 jinja2-django-tags==0.2
 markdown==2.6.2

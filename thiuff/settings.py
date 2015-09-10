@@ -155,12 +155,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "collected-static")
 CHANNEL_BACKENDS = {
     "default": {
         "BACKEND": "channels.backends.database.DatabaseChannelBackend",
-        "ROUTING": {
-            "django.websocket.connect": "threads.consumers.ws_connect",
-            "django.websocket.keepalive": "threads.consumers.ws_connect",
-            "django.websocket.receive": "threads.consumers.ws_message",
-            "django.websocket.disconnect": "threads.consumers.ws_disconnect",
-        },
+        "ROUTING": "thiuff.urls.channel_routing",
     },
 }
 

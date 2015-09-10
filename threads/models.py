@@ -5,7 +5,11 @@ import htmlmin
 import json
 import markdown
 import urlman
-import urlparse
+
+try:
+    import urllib.parse as urlparse
+except ImportError:
+    import urlparse
 
 from django.db import models
 from django.utils.functional import cached_property

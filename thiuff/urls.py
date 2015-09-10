@@ -3,6 +3,7 @@ from django.contrib import admin
 
 from thiuff.shortcuts import flat_template
 from threads.views import front, groups, threads
+from threads import consumers
 from users.views import auth, users
 from chat import views as chat
 
@@ -35,3 +36,10 @@ urlpatterns = [
     url(r'^g/[^/]+/t/[^/]+/m/([^/]+)/report/$', threads.report_message),
     url(r'^admin/', admin.site.urls),
 ]
+
+channel_routing = {
+    "websocket.connect": consumers.ws_connect,
+    "websocket.keepalive": consumers.ws_keepalive,
+    "websocket.receive": consumers.ws_message,
+    "websocket.disconnect": consumers.ws_disconnect,
+}

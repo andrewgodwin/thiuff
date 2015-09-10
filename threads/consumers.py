@@ -1,11 +1,25 @@
 import json
 from channels import Channel, Group
-from channels.decorators import http_django_auth, channel_session
+from channels.decorators import linearize, channel_session
+from channels.auth import http_session_user, channel_session_user, transfer_user
 from .models import Group as GroupModel, Thread
 
 
+@linearize
 @channel_session
+@http_session_user
 def ws_connect(message):
+    """
+    Handles initial connection
+    """
+    # Subscribe to the global site channel
+    Group("global").add(message.reply_channel)
+    # Transfer user across
+    transfer_user(message.http_session, message.channel_session)
+
+
+@channel_session
+def ws_keepalive(message):
     """
     Keeps websockets subscribed to channel Groups.
     """
@@ -16,8 +30,8 @@ def ws_connect(message):
         Group("stream-%s" % stream).add(message.reply_channel)
 
 
-@http_django_auth
-@channel_session
+@linearize
+@channel_session_user
 def ws_message(message):
     # Parse incoming JSON message
     try:
@@ -39,16 +53,20 @@ def ws_message(message):
                     message.channel_session['streams'] = message.channel_session.get("streams", []) + [stream]
                 # Send the error reason back if denied
                 else:
-                    message.reply_channel.send(content=json.dumps({
-                        "error": reason,
-                        "stream": stream,
-                    }))
+                    message.reply_channel.send({
+                        "content": json.dumps({
+                            "error": reason,
+                            "stream": stream,
+                        }),
+                    })
             except:
                 # Notify client of stream errors then reraise
-                message.reply_channel.send(content=json.dumps({
-                    "error": "stream-perm-internal-error",
-                    "stream": stream,
-                }))
+                message.reply_channel.send({
+                    "content": json.dumps({
+                        "error": "stream-perm-internal-error",
+                        "stream": stream,
+                    }),
+                })
                 raise
     else:
         message.reply_channel.send(content=json.dumps({"error": "wrong-type"}))
